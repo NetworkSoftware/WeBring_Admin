@@ -103,10 +103,8 @@ public class MainActivity extends AppCompatActivity implements OnShopClick {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             Shop shop = new Shop();
                             shop.setId(jsonObject.getString("id"));
-                            shop.setShopname(jsonObject.getString("shopname"));
-                            shop.setConfirmPass(jsonObject.getString("password"));
-                            shop.setPassword(jsonObject.getString("password"));
-                            shop.setContact(jsonObject.getString("contact"));
+                            shop.setShopname(jsonObject.getString("storename"));
+                              shop.setContact(jsonObject.getString("phone"));
                             shop.setAddress(jsonObject.getString("address"));
                             shopList.add(shop);
                         }
@@ -206,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements OnShopClick {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
                 localHashMap.put("id", shop.getId());
-                localHashMap.put("shopname", shop.getShopname());
+                localHashMap.put("storename", shop.getShopname());
                 return localHashMap;
             }
         };

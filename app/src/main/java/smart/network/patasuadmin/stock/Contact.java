@@ -8,31 +8,19 @@ import java.io.Serializable;
 
 public class Contact implements Serializable{
     String id;
-    String brand;
-    String model;
+    String title;
+    String items;
     String price;
-    String ram;
-    String rom;
-    String name;
-    String image;
+    String shopid;
 
     public Contact() {
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public Contact(String title, String items, String price, String shopid) {
+        this.title = title;
+        this.items = items;
+        this.price = price;
+        this.shopid = shopid;
     }
 
     public String getId() {
@@ -43,20 +31,20 @@ public class Contact implements Serializable{
         this.id = id;
     }
 
-    public String getBrand() {
-        return brand;
+    public String getTitle() {
+        return title;
     }
 
-    public void setBrand(String brand) {
-        this.brand = brand;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getModel() {
-        return model;
+    public String getItems() {
+        return items;
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    public void setItems(String items) {
+        this.items = items;
     }
 
     public String getPrice() {
@@ -67,19 +55,11 @@ public class Contact implements Serializable{
         this.price = price;
     }
 
-    public String getRam() {
-        return ram;
+    public String getShopid() {
+        return shopid;
     }
 
-    public void setRam(String ram) {
-        this.ram = ram;
-    }
-
-    public String getRom() {
-        return rom;
-    }
-
-    public void setRom(String rom) {
-        this.rom = rom;
+    public void setShopid(String shopid) {
+        this.shopid = shopid;
     }
 }

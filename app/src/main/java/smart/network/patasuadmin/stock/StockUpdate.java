@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,8 +25,10 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -34,6 +38,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,55 +54,49 @@ import smart.network.patasuadmin.app.Appconfig;
 import smart.network.patasuadmin.app.GlideApp;
 import smart.network.patasuadmin.app.Imageutils;
 import de.hdodenhof.circleimageview.CircleImageView;
+import smart.network.patasuadmin.shop.Shop;
+
+import static smart.network.patasuadmin.app.Appconfig.ALL_SHOP;
+import static smart.network.patasuadmin.app.Appconfig.STACK_DELETE;
+import static smart.network.patasuadmin.app.Appconfig.STACK_UPDATE;
 
 /**
  * Created by user_1 on 11-07-2018.
  */
 
-public class StockUpdate extends AppCompatActivity implements Imageutils.ImageAttachmentListener {
+public class StockUpdate extends AppCompatActivity {
 
 
-    EditText brand;
-    EditText model;
+    EditText title;
+    EditText items;
     EditText price;
-    EditText ram;
-    EditText rom, name;
-
     private ProgressDialog pDialog;
 
 
-    String studentId = null;
+   Contact contact;
+    String shopId = null;
+    MaterialBetterSpinner shopid;
 
     TextView submit;
-    private static final String URL = Appconfig.ip + "/admin/seconds/update_stock.php";
-    private static final String URL_DELETE = Appconfig.ip + "/admin/seconds/delete_stock.php";
-    Imageutils imageutils;
-    private CircleImageView profiletImage;
-    private String imageUrl = "";
+    Map<String, String> storecodeMap = new HashMap<>();
+    Map<String, String> storeNameMap = new HashMap<>();
+    private String[] STOREID = new String[]{
+            "Loading",
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stock_register);
-        imageutils = new Imageutils(this);
 
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
 
-        profiletImage = (CircleImageView) findViewById(R.id.profiletImage);
-        profiletImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageutils.imagepicker(1);
-            }
-        });
 
-        name = (EditText) findViewById(R.id.name);
-        brand = (EditText) findViewById(R.id.brand);
-        model = (EditText) findViewById(R.id.model);
+        shopid = (MaterialBetterSpinner) findViewById(R.id.storeid);
+        title = (EditText) findViewById(R.id.title);
+        items = (EditText) findViewById(R.id.items);
         price = (EditText) findViewById(R.id.price);
-        ram = (EditText) findViewById(R.id.ram);
-        rom = (EditText) findViewById(R.id.rom);
 
 
         submit = (TextView) findViewById(R.id.submit);
@@ -105,41 +104,36 @@ public class StockUpdate extends AppCompatActivity implements Imageutils.ImageAt
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (brand.getText().toString().length() > 0 &&
-//                        model.getText().toString().length() > 0 &&
+                if (title.getText().toString().length() > 0 &&
                         price.getText().toString().length() > 0 &&
-                        ram.getText().toString().length() > 0 &&
-                        name.getText().toString().length() > 0 &&
-                        rom.getText().toString().length() > 0
+                        items.getText().toString().length() > 0 &&
+                        shopid.getText().toString().length() > 0
                 ) {
-                    registerUser();
+                    registerUser(contact);
 
                 }
             }
         });
-
-
+        shopid=findViewById(R.id.storeid);
+        ArrayAdapter<String> stateAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, STOREID);
+        shopid.setAdapter(stateAdapter);
+        shopid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            }
+        });
+        fetchstoreid();
         try {
 
             Contact contact = (Contact) getIntent().getSerializableExtra("data");
-            brand.setText(contact.brand);
-            model.setText(contact.model);
+            items.setText(contact.items);
+            title.setText(contact.title);
             price.setText(contact.price);
-            ram.setText(contact.ram);
-            rom.setText(contact.rom);
-            studentId = contact.id;
-            imageUrl = contact.image;
-            if (imageUrl == null) {
-                imageUrl = "";
-            }
-            name.setText(contact.name);
-            GlideApp.with(getApplicationContext())
-                    .load(imageUrl)
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .skipMemoryCache(false)
-                    .placeholder(R.drawable.profile)
-                    .into(profiletImage);
+            shopid.setText(contact.shopid);
+            submit.setText("Update");
+
+
         } catch (Exception e) {
             Log.e("xxxxxxxxxxx", e.toString());
 
@@ -147,22 +141,22 @@ public class StockUpdate extends AppCompatActivity implements Imageutils.ImageAt
 
     }
 
-    private void registerUser() {
+    private void registerUser(final Contact contact) {
         String tag_string_req = "req_register";
         pDialog.setMessage("Processing ...");
         showDialog();
         // showDialog();
         StringRequest strReq = new StringRequest(Request.Method.POST,
-                URL, new Response.Listener<String>() {
+                STACK_UPDATE, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response.toString());
                 hideDialog();
                 try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    boolean success = jsonObject.getBoolean("success");
-                    String msg = jsonObject.getString("message");
-                    if (success) {
+                    JSONObject jObj = new JSONObject(response.substring(response.indexOf("{"), response.length()));
+                    int success = jObj.getInt("success");
+                    String msg = jObj.getString("message");
+                    if (success == 1) {
                         finish();
                     }
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
@@ -184,63 +178,19 @@ public class StockUpdate extends AppCompatActivity implements Imageutils.ImageAt
         }) {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
-                localHashMap.put("brand", brand.getText().toString());
-                localHashMap.put("model", model.getText().toString());
+                localHashMap.put("title", title.getText().toString());
+                localHashMap.put("items", items.getText().toString());
                 localHashMap.put("price", price.getText().toString());
-                localHashMap.put("ram", ram.getText().toString());
-                localHashMap.put("rom", rom.getText().toString());
-                localHashMap.put("name", name.getText().toString());
-                localHashMap.put("id", studentId);
-                localHashMap.put("image", imageUrl);
+                localHashMap.put("shopid", shopid.getText().toString());
                 return localHashMap;
             }
         };
-        AppController.getInstance().addToRequestQueue(strReq);
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
-    private void deleteUser() {
-        String tag_string_req = "req_register";
-        pDialog.setMessage("Processing ...");
-        showDialog();
-        // showDialog();
-        StringRequest strReq = new StringRequest(Request.Method.POST,
-                URL_DELETE, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d("Register Response: ", response.toString());
-                hideDialog();
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    boolean success = jsonObject.getBoolean("success");
-                    String msg = jsonObject.getString("message");
-                    if (success) {
-                        finish();
-                    }
-                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                } catch (JSONException e) {
-                    Toast.makeText(getApplicationContext(), "Some Network Error.Try after some time", Toast.LENGTH_SHORT).show();
 
-                }
 
-            }
-        }, new Response.ErrorListener() {
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("Registration Error: ", error.getMessage());
-                Toast.makeText(getApplicationContext(),
-                        "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
-                hideDialog();
-            }
-        }) {
-            protected Map<String, String> getParams() {
-                HashMap localHashMap = new HashMap();
-                localHashMap.put("id", studentId);
-                return localHashMap;
-            }
-        };
-        AppController.getInstance().addToRequestQueue(strReq);
-    }
 
 
     private void showDialog() {
@@ -259,180 +209,54 @@ public class StockUpdate extends AppCompatActivity implements Imageutils.ImageAt
         super.onPause();
         hideDialog();
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        imageutils.request_permission_result(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
-        String path = Environment.getExternalStorageDirectory() + File.separator + "ImageAttach" + File.separator;
-        imageutils.createImage(file, filename, path, false);
-        pDialog.setMessage("Uploading...");
+    private void fetchstoreid() {
+        this.pDialog.setMessage("fetching...");
         showDialog();
-        new UploadFileToServer().execute(imageutils.getPath(uri));
-    }
+        JSONObject jsonObject = new JSONObject();
 
-    private class UploadFileToServer extends AsyncTask<String, Integer, String> {
-        String filepath;
-        public long totalSize = 0;
+        JsonObjectRequest local16 = new JsonObjectRequest(1, ALL_SHOP, jsonObject,
+                new Response.Listener<JSONObject>() {
+                    public void onResponse(JSONObject localJSONObject1) {
+                        hideDialog();
+                        try {
+                            if (localJSONObject1.getInt("success") == 1) {
+                                storecodeMap = new HashMap<>();
+                                storeNameMap = new HashMap<>();
+                                JSONArray jsonArray = localJSONObject1.getJSONArray("shops");
+                                STOREID = new String[jsonArray.length()];
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                    STOREID[i] = jsonObject1.getString("storename");
+                                    storecodeMap.put(jsonObject1.getString("storename"), jsonObject1.getString("id"));
+                                    storeNameMap.put(jsonObject1.getString("id"), jsonObject1.getString("storename"));
+                                }
+                                ArrayAdapter<String> districtAdapter = new ArrayAdapter<String>(StockUpdate.this,
+                                        android.R.layout.simple_dropdown_item_1line, STOREID);
+                                shopid.setAdapter(districtAdapter);
+                                shopid.setText("");
 
-        @Override
-        protected void onPreExecute() {
-            // setting progress bar to zero
 
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-            pDialog.setMessage("Uploading..." + (String.valueOf(progress[0])));
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            filepath = params[0];
-            return uploadFile();
-        }
-
-        @SuppressWarnings("deprecation")
-        private String uploadFile() {
-            String responseString = null;
-
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(Appconfig.URL_IMAGE_UPLOAD);
-            try {
-                AndroidMultiPartEntity entity = new AndroidMultiPartEntity(
-                        new AndroidMultiPartEntity.ProgressListener() {
-
-                            @Override
-                            public void transferred(long num) {
-                                publishProgress((int) ((num / (float) totalSize) * 100));
+                                return;
                             }
-                        });
-
-                File sourceFile = new File(filepath);
-                // Adding file data to http body
-                entity.addPart("image", new FileBody(sourceFile));
-
-                totalSize = entity.getContentLength();
-                httppost.setEntity(entity);
-
-                // Making server call
-                HttpResponse response = httpclient.execute(httppost);
-                HttpEntity r_entity = response.getEntity();
-
-                int statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode == 200) {
-                    // Server response
-                    responseString = EntityUtils.toString(r_entity);
-
-                } else {
-                    responseString = "Error occurred! Http Status Code: "
-                            + statusCode;
-
-                }
-
-            } catch (ClientProtocolException e) {
-                responseString = e.toString();
-            } catch (IOException e) {
-                responseString = e.toString();
-            }
-
-            return responseString;
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Log.e("Response from server: ", result);
-            try {
-                JSONObject jsonObject = new JSONObject(result.toString());
-                if (!jsonObject.getBoolean("error")) {
-                    GlideApp.with(getApplicationContext())
-                            .load(filepath)
-                            .dontAnimate()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .skipMemoryCache(false)
-                            .placeholder(R.drawable.profile)
-                            .into(profiletImage);
-                    imageUrl = Appconfig.ip + "/admin/uploads/" + imageutils.getfilename_from_path(filepath);
-                } else {
-                    imageUrl = null;
-                }
-                Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-
-            } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), "Image not uploaded", Toast.LENGTH_SHORT).show();
-            }
-            hideDialog();
-            // showing the server response in an alert dialog
-            //showAlert(result);
-
-
-            super.onPostExecute(result);
-        }
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        imageutils.onActivityResult(requestCode, resultCode, data);
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu options from the res/menu/menu_editor.xml file.
-        // This adds menu items to the app bar.
-        getMenuInflater().inflate(R.menu.menu_delete, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // User clicked on a menu option in the app bar overflow menu
-        switch (item.getItemId()) {
-            case R.id.action_delete:
-                AlertDialog diaBox = AskOption();
-                diaBox.show();
-                return true;
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    private AlertDialog AskOption()
-    {
-        AlertDialog myQuittingDialogBox = new AlertDialog.Builder(this)
-                // set message, title, and icon
-                .setTitle("Delete")
-                .setMessage("Do you want to Delete")
-                .setIcon(R.drawable.ic_delete_black_24dp)
-
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        //your deleting code
-                        dialog.dismiss();
-                        deleteUser();
+                        } catch (JSONException localJSONException) {
+                            localJSONException.printStackTrace();
+                        }
                     }
+                }, new Response.ErrorListener() {
+            public void onErrorResponse(VolleyError paramVolleyError) {
+                Log.e("tag", "Fetch Error: " + paramVolleyError.getMessage());
+                Toast.makeText(getApplicationContext(), paramVolleyError.getMessage(), Toast.LENGTH_SHORT).show();
+                hideDialog();
+            }
+        }) {
+            protected Map<String, String> getParams() {
 
-                })
-                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+                HashMap<String, String> localHashMap = new HashMap<String, String>();
 
-                        dialog.dismiss();
-
-                    }
-                })
-                .create();
-
-        return myQuittingDialogBox;
+                return localHashMap;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(local16, "");
     }
+
 }

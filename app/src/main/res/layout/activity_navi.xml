@@ -15,6 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Patasu Kadai"
+            android:visibility="gone"
             android:layout_gravity="center"
             android:textColor="@color/colorPrimary"
             android:fontFamily="@font/sans"
@@ -25,7 +26,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal">
         <android.support.v7.widget.CardView
             android:id="@+id/shop"

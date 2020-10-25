@@ -12,6 +12,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,8 +21,10 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -30,6 +34,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,48 +50,46 @@ import smart.network.patasuadmin.app.Appconfig;
 import smart.network.patasuadmin.app.GlideApp;
 import smart.network.patasuadmin.app.Imageutils;
 import de.hdodenhof.circleimageview.CircleImageView;
+import smart.network.patasuadmin.shop.Shop;
+
+import static smart.network.patasuadmin.app.Appconfig.ALL_SHOP;
 
 /**
  * Created by user_1 on 11-07-2018.
  */
 
-public class StaffUpdate extends AppCompatActivity implements Imageutils.ImageAttachmentListener{
+public class StaffUpdate extends AppCompatActivity {
 
 
-    EditText password,name,contact;
+    EditText password, name;
+    MaterialBetterSpinner storeid;
 
 
     private ProgressDialog pDialog;
 
+    private Staff staff;
 
     String studentId = null;
 
+    private String[] STOREID = new String[]{
+            "Loading",
+    };
     TextView submit;
-    private static final String URL = Appconfig.ip + "/admin/staff/update_stock.php";
-    Imageutils imageutils;
-    private CircleImageView profiletImage;
-    private String imageUrl = "";
+    Map<String, String> storecodeMap = new HashMap<>();
+    Map<String, String> storeNameMap = new HashMap<>();
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.staff_register);
-        imageutils = new Imageutils(this);
 
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
 
-        profiletImage = (CircleImageView) findViewById(R.id.profiletImage);
-        profiletImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageutils.imagepicker(1);
-            }
-        });
 
         name = (EditText) findViewById(R.id.name);
         password = (EditText) findViewById(R.id.password);
-        contact = (EditText) findViewById(R.id.contact);
 
         submit = (TextView) findViewById(R.id.submit);
 
@@ -94,8 +97,7 @@ public class StaffUpdate extends AppCompatActivity implements Imageutils.ImageAt
             @Override
             public void onClick(View v) {
                 if (name.getText().toString().length() > 0 &&
-                        password.getText().toString().length() > 0 &&
-                        contact.getText().toString().length() > 0
+                        password.getText().toString().length() > 0
                 ) {
                     registerUser();
 
@@ -103,26 +105,26 @@ public class StaffUpdate extends AppCompatActivity implements Imageutils.ImageAt
             }
         });
 
-
+        storeid = findViewById(R.id.storeid);
+        ArrayAdapter<String> stateAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, STOREID);
+        storeid.setAdapter(stateAdapter);
+        storeid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            }
+        });
+        fetchstoreid();
         try {
 
-            Staff staff = (Staff) getIntent().getSerializableExtra("data");
+             staff = (Staff) getIntent().getSerializableExtra("data");
             name.setText(staff.name);
-            contact.setText(staff.contact);
             password.setText(staff.password);
+            storeid.setText(staff.getStoreid());
             studentId = staff.id;
-            imageUrl = staff.image;
-            if(imageUrl==null){
-                imageUrl="";
-            }
-            name.setText(staff.name);
-            GlideApp.with(getApplicationContext())
-                    .load(imageUrl)
-                    .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .skipMemoryCache(false)
-                    .placeholder(R.drawable.profile)
-                    .into(profiletImage);
+            submit.setText("Update");
+
+
         } catch (Exception e) {
             Log.e("xxxxxxxxxxx", e.toString());
         }
@@ -135,7 +137,7 @@ public class StaffUpdate extends AppCompatActivity implements Imageutils.ImageAt
         showDialog();
         // showDialog();
         StringRequest strReq = new StringRequest(Request.Method.POST,
-                URL, new Response.Listener<String>() {
+                Appconfig.STAFF_UPDATE, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("Register Response: ", response.toString());
@@ -166,17 +168,65 @@ public class StaffUpdate extends AppCompatActivity implements Imageutils.ImageAt
         }) {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
-                localHashMap.put("contact", contact.getText().toString());
+                localHashMap.put("storeid", storeid.getText().toString());
                 localHashMap.put("password", password.getText().toString());
                 localHashMap.put("name", name.getText().toString());
                 localHashMap.put("id", studentId);
-                localHashMap.put("image", imageUrl);
                 return localHashMap;
             }
         };
         AppController.getInstance().addToRequestQueue(strReq);
     }
 
+    private void fetchstoreid() {
+        this.pDialog.setMessage("fetching...");
+        showDialog();
+        JSONObject jsonObject = new JSONObject();
+
+        JsonObjectRequest local16 = new JsonObjectRequest(1, ALL_SHOP, jsonObject,
+                new Response.Listener<JSONObject>() {
+                    public void onResponse(JSONObject localJSONObject1) {
+                        hideDialog();
+                        try {
+                            if (localJSONObject1.getInt("success") == 1) {
+                                storecodeMap = new HashMap<>();
+                                storeNameMap = new HashMap<>();
+                                JSONArray jsonArray = localJSONObject1.getJSONArray("shops");
+                                STOREID = new String[jsonArray.length()];
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                    STOREID[i] = jsonObject1.getString("storename");
+                                    storecodeMap.put(jsonObject1.getString("storename"), jsonObject1.getString("id"));
+                                    storeNameMap.put(jsonObject1.getString("id"), jsonObject1.getString("storename"));
+                                }
+                                ArrayAdapter<String> districtAdapter = new ArrayAdapter<String>(StaffUpdate.this,
+                                        android.R.layout.simple_dropdown_item_1line, STOREID);
+                                storeid.setAdapter(districtAdapter);
+                                storeid.setText("");
+
+
+                                return;
+                            }
+                        } catch (JSONException localJSONException) {
+                            localJSONException.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            public void onErrorResponse(VolleyError paramVolleyError) {
+                Log.e("tag", "Fetch Error: " + paramVolleyError.getMessage());
+                Toast.makeText(getApplicationContext(), paramVolleyError.getMessage(), Toast.LENGTH_SHORT).show();
+                hideDialog();
+            }
+        }) {
+            protected Map<String, String> getParams() {
+
+                HashMap<String, String> localHashMap = new HashMap<String, String>();
+
+                return localHashMap;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(local16, "");
+    }
 
     private void showDialog() {
         if (!pDialog.isShowing())
@@ -194,125 +244,5 @@ public class StaffUpdate extends AppCompatActivity implements Imageutils.ImageAt
         super.onPause();
         hideDialog();
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        imageutils.request_permission_result(requestCode, permissions, grantResults);
-    }
 
-    @Override
-    public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
-        String path = Environment.getExternalStorageDirectory() + File.separator + "ImageAttach" + File.separator;
-        imageutils.createImage(file, filename, path, false);
-        pDialog.setMessage("Uploading...");
-        showDialog();
-        new UploadFileToServer().execute(imageutils.getPath(uri));
-    }
-
-    private class UploadFileToServer extends AsyncTask<String, Integer, String> {
-        String filepath;
-        public long totalSize = 0;
-
-        @Override
-        protected void onPreExecute() {
-            // setting progress bar to zero
-
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-            pDialog.setMessage("Uploading..." + (String.valueOf(progress[0])));
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            filepath = params[0];
-            return uploadFile();
-        }
-
-        @SuppressWarnings("deprecation")
-        private String uploadFile() {
-            String responseString = null;
-
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(Appconfig.URL_IMAGE_UPLOAD);
-            try {
-                AndroidMultiPartEntity entity = new AndroidMultiPartEntity(
-                        new AndroidMultiPartEntity.ProgressListener() {
-
-                            @Override
-                            public void transferred(long num) {
-                                publishProgress((int) ((num / (float) totalSize) * 100));
-                            }
-                        });
-
-                File sourceFile = new File(filepath);
-                // Adding file data to http body
-                entity.addPart("image", new FileBody(sourceFile));
-
-                totalSize = entity.getContentLength();
-                httppost.setEntity(entity);
-
-                // Making server call
-                HttpResponse response = httpclient.execute(httppost);
-                HttpEntity r_entity = response.getEntity();
-
-                int statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode == 200) {
-                    // Server response
-                    responseString = EntityUtils.toString(r_entity);
-
-                } else {
-                    responseString = "Error occurred! Http Status Code: "
-                            + statusCode;
-
-                }
-
-            } catch (ClientProtocolException e) {
-                responseString = e.toString();
-            } catch (IOException e) {
-                responseString = e.toString();
-            }
-
-            return responseString;
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Log.e("Response from server: ", result);
-            try {
-                JSONObject jsonObject = new JSONObject(result.toString());
-                if (!jsonObject.getBoolean("error")) {
-                    GlideApp.with(getApplicationContext())
-                            .load(filepath)
-                            .dontAnimate()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .skipMemoryCache(false)
-                            .placeholder(R.drawable.profile)
-                            .into(profiletImage);
-                    imageUrl = Appconfig.ip + "/admin/uploads/" + imageutils.getfilename_from_path(filepath);
-                } else {
-                    imageUrl = null;
-                }
-                Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-
-            } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), "Image not uploaded", Toast.LENGTH_SHORT).show();
-            }
-            hideDialog();
-            // showing the server response in an alert dialog
-            //showAlert(result);
-
-
-            super.onPostExecute(result);
-        }
-
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-            imageutils.onActivityResult(requestCode, resultCode, data);
-
-    }
 }

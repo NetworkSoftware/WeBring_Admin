@@ -1,12 +1,15 @@
 package smart.network.patasuadmin.staff;
 
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -20,31 +23,40 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import smart.network.patasuadmin.R;
 import smart.network.patasuadmin.app.AppController;
 import smart.network.patasuadmin.app.Appconfig;
+import smart.network.patasuadmin.shop.MainActivity;
+import smart.network.patasuadmin.shop.Shop;
+import smart.network.patasuadmin.shop.ShopUpdate;
 import smart.network.patasuadmin.stock.MyDividerItemDecoration;
 
-public class MainActivityStaff extends AppCompatActivity implements StaffAdapter.StaffAdapterListener {
+public class MainActivityStaff extends AppCompatActivity implements OnStaffClick {
     private static final String TAG = MainActivityStaff.class.getSimpleName();
     private RecyclerView recyclerView;
     private List<Staff> contactList;
     private StaffAdapter mAdapter;
     private SearchView searchView;
+    ProgressDialog progressDialog;
 
     // url to fetch contacts json
-    private static final String URL = Appconfig.ip+"/admin/staff/dataFetchAll.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +64,8 @@ public class MainActivityStaff extends AppCompatActivity implements StaffAdapter
         setContentView(R.layout.activity_mainstaff);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
 
         // toolbar fancy stuff
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -59,7 +73,7 @@ public class MainActivityStaff extends AppCompatActivity implements StaffAdapter
 
         recyclerView = findViewById(R.id.recycler_view);
         contactList = new ArrayList<>();
-        mAdapter = new StaffAdapter(this, contactList, this);
+        mAdapter = new StaffAdapter(this, contactList,this);
 
         // white background notification bar
         whiteNotificationBar(recyclerView);
@@ -82,46 +96,77 @@ public class MainActivityStaff extends AppCompatActivity implements StaffAdapter
             }
         });
     }
+    private void showDialog() {
+        if (!progressDialog.isShowing())
+            progressDialog.show();
+    }
 
-    /**
-     * fetches json by making http calls
-     */
-    private void fetchContacts() {
-        JsonObjectRequest request = new JsonObjectRequest(URL, new JSONObject(),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        if (response == null) {
-                            Toast.makeText(getApplicationContext(), "Couldn't fetch the contacts! Pleas try again.", Toast.LENGTH_LONG).show();
-                            return;
+    private void hideDialog() {
+        if (progressDialog.isShowing())
+            progressDialog.dismiss();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getAllStaff();
+
+    }
+    private void getAllStaff() {
+        String tag_string_req = "req_register";
+        progressDialog.setMessage("Fetching ...");
+        showDialog();
+        // showDialog();
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                Appconfig.STAFF_GET_ALL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("Register Response: ", response.toString());
+                hideDialog();
+                try {
+                    JSONObject jObj = new JSONObject(response);
+                    int success = jObj.getInt("success");
+
+                    if (success == 1) {
+                        JSONArray jsonArray = jObj.getJSONArray("staff");
+                        contactList = new ArrayList<>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            Staff staff = new Staff();
+                            staff.setId(jsonObject.getString("id"));
+                            staff.setName(jsonObject.getString("name"));
+                            staff.setPassword(jsonObject.getString("password"));
+                            staff.setStoreid(jsonObject.getString("storeid"));
+                            contactList.add(staff);
                         }
+                        mAdapter.notifyData(contactList);
 
-                        try {
-                            List<Staff> items = new Gson().fromJson(response.getJSONArray("data").toString(),
-                                    new TypeToken<List<Staff>>() {
-                                    }.getType());
-
-                            // adding contacts to contacts list
-                            contactList.clear();
-                            contactList.addAll(items);
-
-                            // refreshing recycler view
-                            mAdapter.notifyDataSetChanged();
-                            getSupportActionBar().setSubtitle(String.valueOf(contactList.size()) + "  Nos");
-                        } catch (Exception e) {
-                            Log.e("xxxxxxxxxxx", e.toString());
-                        }
+                    } else {
+                        Toast.makeText(MainActivityStaff.this, jObj.getString("message"), Toast.LENGTH_SHORT).show();
                     }
-                }, new Response.ErrorListener() {
+                } catch (JSONException e) {
+                    Log.e("xxxxxxxxxxx", e.toString());
+                    Toast.makeText(MainActivityStaff.this, "Some Network Error.Try after some time", Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+
             @Override
             public void onErrorResponse(VolleyError error) {
-                // error in getting json
-                Log.e(TAG, "Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(), "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("Registration Error: ", error.getMessage());
+                Toast.makeText(MainActivityStaff.this,
+                        "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
+                hideDialog();
             }
-        });
-
-        AppController.getInstance().addToRequestQueue(request);
+        }) {
+            protected Map<String, String> getParams() {
+                HashMap localHashMap = new HashMap();
+                return localHashMap;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
 
     @Override
@@ -189,17 +234,104 @@ public class MainActivityStaff extends AppCompatActivity implements StaffAdapter
         }
     }
 
+
     @Override
-    public void onStaffSelected(Staff contact) {
+    public void onDeleteClick(int position) {
+        AlertDialog diaBox = AskOption(position);
+        diaBox.show();
+    }
+
+    @Override
+    public void onEditClick(int position) {
         Intent intent = new Intent(MainActivityStaff.this, StaffUpdate.class);
-        intent.putExtra("data", contact);
+        intent.putExtra("object", contactList.get(position));
         startActivity(intent);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        fetchContacts();
+    private AlertDialog AskOption(final int position) {
+        AlertDialog myQuittingDialogBox = new AlertDialog.Builder(this)
+                //set message, title, and icon
+                .setTitle("Delete")
+                .setMessage("Do you want to Delete")
+                .setIcon(R.drawable.ic_delete_black_24dp)
+
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        //your deleting code
+                        deleteStaff(contactList.get(position), position);
+                        dialog.dismiss();
+                    }
+
+                })
+
+
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.dismiss();
+
+                    }
+                })
+                .create();
+        return myQuittingDialogBox;
 
     }
+    private void deleteStaff(final Staff staff, final int position) {
+        String tag_string_req = "req_register";
+        progressDialog.setMessage("Fetching ...");
+        showDialog();
+        // showDialog();
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                Appconfig.STAFF_DELETE, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("Register Response: ", response.toString());
+                hideDialog();
+                try {
+                    JSONObject jObj = new JSONObject(response);
+                    int success = jObj.getInt("success");
+                    if (success == 1) {
+                        contactList.remove(position);
+                    }
+                    Toast.makeText(MainActivityStaff.this, jObj.getString("message"), Toast.LENGTH_SHORT).show();
+                    mAdapter.notifyData(contactList);
+
+                } catch (
+                        JSONException e)
+
+                {
+                    Log.e("xxxxxxxxxxx", e.toString());
+                    Toast.makeText(MainActivityStaff.this, "Some Network Error.Try after some time", Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        }, new Response.ErrorListener()
+
+        {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Registration Error: ", error.getMessage());
+                Toast.makeText(MainActivityStaff.this,
+                        "Some Network Error.Try after some time", Toast.LENGTH_LONG).show();
+                hideDialog();
+            }
+        })
+
+        {
+            protected Map<String, String> getParams() {
+                HashMap localHashMap = new HashMap();
+                localHashMap.put("id", staff.getId());
+                localHashMap.put("name", staff.getName());
+                return localHashMap;
+            }
+        };
+        AppController.getInstance().
+
+                addToRequestQueue(strReq, tag_string_req);
+    }
+
+
 }

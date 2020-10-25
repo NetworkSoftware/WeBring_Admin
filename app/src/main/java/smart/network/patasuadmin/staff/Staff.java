@@ -6,15 +6,19 @@ import java.io.Serializable;
  * Created by ravi on 16/11/17.
  */
 
-public class Staff implements Serializable{
+public class Staff implements Serializable {
     String id;
     String name;
-    String image;
-    String contact;
+    String storeid;
     String password;
-    String createdat;
 
     public Staff() {
+    }
+
+    public Staff(String name, String storeid, String password) {
+        this.name = name;
+        this.storeid = storeid;
+        this.password = password;
     }
 
     public String getId() {
@@ -33,20 +37,12 @@ public class Staff implements Serializable{
         this.name = name;
     }
 
-    public String getImage() {
-        return image;
+    public String getStoreid() {
+        return storeid;
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
+    public void setStoreid(String storeid) {
+        this.storeid = storeid;
     }
 
     public String getPassword() {
@@ -55,13 +51,5 @@ public class Staff implements Serializable{
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getCreatedat() {
-        return createdat;
-    }
-
-    public void setCreatedat(String createdat) {
-        this.createdat = createdat;
     }
 }

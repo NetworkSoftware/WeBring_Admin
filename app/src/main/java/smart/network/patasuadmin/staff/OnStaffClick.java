@@ -1,6 +1,6 @@
-package smart.network.patasuadmin.offer;
+package smart.network.patasuadmin.staff;
 
-public interface OnOfferClick {
+public interface OnStaffClick {
 
     void onDeleteClick(int position);
 

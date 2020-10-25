@@ -15,35 +15,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <FrameLayout
+            <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                android:id="@+id/storeid"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profiletImage"
-                    android:layout_width="70.0dip"
-                    android:layout_height="70.0dip"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10.0dip"
-                    android:src="@drawable/profile" />
-
-                <ProgressBar
-                    android:id="@+id/progressimg"
-                    android:layout_width="70.0dip"
-                    android:layout_height="70.0dip"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10.0dip"
-                    android:visibility="gone" />
-            </FrameLayout>
-
-            <TextView
-                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="3.0dip"
-                android:gravity="center"
-                android:text="Photo"
-                android:textColor="@color/primaryTextColor" />
+                android:hint="Select Store"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_margin="5dp"
+                android:textColorHint="#c6c6c6"
+                app:met_floatingLabel="normal"/>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -57,27 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:backgroundTint="@color/gray"
-                    android:hint="Name"
-                    android:inputType="textCapWords"
-                    android:textColorHint="#c6c6c6"
-                    android:textSize="@dimen/textsize" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:layout_weight="1">
-
-                <EditText
-                    android:id="@+id/contact"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:backgroundTint="@color/gray"
-                    android:hint="Contact"
+                    android:hint="Mobile No"
                     android:inputType="number"
                     android:textColorHint="#c6c6c6"
                     android:textSize="@dimen/textsize" />
@@ -117,7 +80,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_gravity="bottom"
-        android:background="#009a9a"
+        android:background="@color/colorPrimary"
         android:gravity="center"
         android:letterSpacing="0.2"
         android:padding="12dp"

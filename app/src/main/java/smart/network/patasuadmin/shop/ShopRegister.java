@@ -68,72 +68,23 @@ import static smart.network.patasuadmin.app.Appconfig.mypreference;
  * Created by user_1 on 11-07-2018.
  */
 
-public class ShopRegister extends AppCompatActivity implements Imageutils.ImageAttachmentListener
-,GoogleApiClient.OnConnectionFailedListener{
+public class ShopRegister extends AppCompatActivity{
 
 
-    String[] areas = {
-            "Ganthipuram",
-            "Ariyalur",
-            "Karur",
-            "Nagapattinam",
-            "Perambalur",
-            "Pudukkottai",
-            "Thanjavur",
-            "Tiruchirappalli",
-            "Tiruvarur",
-            "Dharmapuri",
-            "Coimbatore",
-            "Erode",
-            "Krishnagiri",
-            "Namakkal",
-            "The Nilgiris",
-            "Salem",
-            "Tiruppur",
-            "Dindigul",
-            "Kanyakumari",
-            "Madurai",
-            "Ramanathapuram",
-            "Sivaganga",
-            "Theni",
-            "Thoothukudi",
-            "Tirunelveli",
-            "Virudhunagar",
-            "Chennai",
-            "Cuddalore",
-            "Kanchipuram",
-            "Tiruvallur",
-            "Tiruvannamalai",
-            "Vellore",
-            "Viluppuram",
-            "Kallakurichi",
-    };
 
 
     EditText contact;
     EditText shopname;
-    EditText password;
-    EditText confirmPass;
-    ImageView placeSearch;
     EditText address;
-    String latLon = "";
     private TextView submit;
     private ProgressDialog pDialog;
     SharedPreferences sharedpreferences;
-    Imageutils imageutils;
-    private CircleImageView profiletImage;
-    private String imageUrl = null;
-    AutoCompleteTextView actv;
-
-    private GoogleApiClient mGoogleApiClient;
-    private int PLACE_PICKER_REQUEST = 101;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.shop_register);
 
-        imageutils = new Imageutils(this);
 
         sharedpreferences = getSharedPreferences(mypreference,
                 Context.MODE_PRIVATE);
@@ -147,51 +98,21 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
         contact = (EditText) findViewById(R.id.contact);
         shopname = (EditText) findViewById(R.id.shopName);
         address = (EditText) findViewById(R.id.address);
-        password = (EditText) findViewById(R.id.password);
-        confirmPass = (EditText) findViewById(R.id.confirmPass);
-
-
-
-
-        mGoogleApiClient = new GoogleApiClient
-                .Builder(this)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(this, this)
-                .build();
-
-        placeSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                try {
-                    startActivityForResult(builder.build(ShopRegister.this), PLACE_PICKER_REQUEST);
-                } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        submit = (TextView) findViewById(R.id.submit);
+       submit = (TextView) findViewById(R.id.submit);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (    contact.getText().toString().length() > 0 &&
-                        shopname.getText().toString().length() > 0 &&
-                        password.getText().toString().length() > 0 &&
-                        confirmPass.getText().toString().length() > 0
+                        shopname.getText().toString().length() > 0
                         && address.getText().toString().length() > 0) {
 
-                    if (!password.getText().toString().equalsIgnoreCase(confirmPass.getText().toString())) {
-                        Toast.makeText(getApplicationContext(), "Password & Confirm password not matched", Toast.LENGTH_SHORT).show();
-                    } else if (contact.getText().toString().length() != 10 || contact.getText().toString().matches(".*[a-zA-Z]+.*")) {
+                   if (contact.getText().toString().length() != 10 || contact.getText().toString().matches(".*[a-zA-Z]+.*")) {
                         Toast.makeText(getApplicationContext(), "Enter a valid Contact", Toast.LENGTH_SHORT).show();
                     } else {
                         Shop shop = new Shop(
                                 contact.getText().toString(),
                                 shopname.getText().toString(),
-                                password.getText().toString(),
-                                confirmPass.getText().toString(),
                                 address.getText().toString());
 
                         registerUser(shop);
@@ -239,9 +160,8 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
         }) {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
-                localHashMap.put("shopname", shopname.getText().toString());
-                localHashMap.put("password", password.getText().toString());
-                localHashMap.put("contact", contact.getText().toString());
+                localHashMap.put("storename", shopname.getText().toString());
+                localHashMap.put("phone", contact.getText().toString());
                 localHashMap.put("address", address.getText().toString());
                 return localHashMap;
             }
@@ -261,122 +181,9 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
     }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        imageutils.request_permission_result(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
-        String path = Environment.getExternalStorageDirectory() + File.separator + "ImageAttach" + File.separator;
-        imageutils.createImage(file, filename, path, false);
-        pDialog.setMessage("Uploading...");
-        showDialog();
-        new UploadFileToServer().execute(imageutils.getPath(uri));
-    }
-
-    private class UploadFileToServer extends AsyncTask<String, Integer, String> {
-        String filepath;
-        public long totalSize = 0;
-
-        @Override
-        protected void onPreExecute() {
-            // setting progress bar to zero
-
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-            pDialog.setMessage("Uploading..." + (String.valueOf(progress[0])));
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            filepath = params[0];
-            return uploadFile();
-        }
-
-        @SuppressWarnings("deprecation")
-        private String uploadFile() {
-            String responseString = null;
-
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(Appconfig.URL_IMAGE_UPLOAD);
-            try {
-                AndroidMultiPartEntity entity = new AndroidMultiPartEntity(
-                        new AndroidMultiPartEntity.ProgressListener() {
-
-                            @Override
-                            public void transferred(long num) {
-                                publishProgress((int) ((num / (float) totalSize) * 100));
-                            }
-                        });
-
-                File sourceFile = new File(filepath);
-                // Adding file data to http body
-                entity.addPart("image", new FileBody(sourceFile));
-
-                totalSize = entity.getContentLength();
-                httppost.setEntity(entity);
-
-                // Making server call
-                HttpResponse response = httpclient.execute(httppost);
-                HttpEntity r_entity = response.getEntity();
-
-                int statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode == 200) {
-                    // Server response
-                    responseString = EntityUtils.toString(r_entity);
-
-                } else {
-                    responseString = "Error occurred! Http Status Code: "
-                            + statusCode;
-
-                }
-
-            } catch (ClientProtocolException e) {
-                responseString = e.toString();
-            } catch (IOException e) {
-                responseString = e.toString();
-            }
-
-            return responseString;
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Log.e("Response from server: ", result);
-            try {
-                JSONObject jsonObject = new JSONObject(result.toString());
-                if (!jsonObject.getBoolean("error")) {
-                    GlideApp.with(getApplicationContext())
-                            .load(filepath)
-                            .dontAnimate()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .skipMemoryCache(false)
-                            .placeholder(R.drawable.profile)
-                            .into(profiletImage);
-                    imageUrl = Appconfig.ip + "/admin/uploads/" + imageutils.getfilename_from_path(filepath);
-                } else {
-                    imageUrl = null;
-                }
-                Toast.makeText(getApplicationContext(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-
-            } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), "Image not uploaded", Toast.LENGTH_SHORT).show();
-            }
-            hideDialog();
-            // showing the server response in an alert dialog
-            //showAlert(result);
 
 
-            super.onPostExecute(result);
-        }
 
-    }
 
     @Override
     protected void onPause() {
@@ -385,45 +192,7 @@ public class ShopRegister extends AppCompatActivity implements Imageutils.ImageA
     }
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
 
-    @Override
-    protected void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-    }
 
-    @SuppressLint("WrongConstant")
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getApplicationContext(), connectionResult.getErrorMessage()
-                + "", Snackbar.LENGTH_LONG).show();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PLACE_PICKER_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlacePicker.getPlace(data, this);
-                StringBuilder stBuilder = new StringBuilder();
-
-                String placename = String.format("%s", place.getName());
-                String latitude = String.valueOf(place.getLatLng().latitude);
-                String longitude = String.valueOf(place.getLatLng().longitude);
-                String addressVal = String.format("%s", place.getAddress());
-                latLon = latitude + "," + longitude;
-                shopname.setText(placename);
-                address.setText(addressVal);
-
-            }
-        } else {
-            imageutils.onActivityResult(requestCode, resultCode, data);
-
-        }
-    }
 
 }

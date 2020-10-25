@@ -10,29 +10,23 @@ public class Shop implements Serializable {
     public String id;
     public String contact;
     public String shopname;
-    public String password;
-    public String confirmPass;
     public String address;
 
     public Shop() {
     }
 
-    public Shop(String id, String contact, String shopname, String password, String confirmPass, String address) {
+    public Shop(String id, String contact, String shopname,  String address) {
         this.id = id;
         this.contact = contact;
         this.shopname = shopname;
-        this.password = password;
-        this.confirmPass = confirmPass;
         this.address = address;
        
     }
 
-    public Shop( String contact, String shopname, String password, String confirmPass,  String address) {
+    public Shop( String contact, String shopname,  String address) {
         this.contact = contact;
         this.shopname = shopname;
-        this.password = password;
-        this.confirmPass = confirmPass;
-        this.address = address;
+          this.address = address;
         
     }
 
@@ -70,21 +64,6 @@ public class Shop implements Serializable {
         this.shopname = shopname;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getConfirmPass() {
-        return confirmPass;
-    }
-
-    public void setConfirmPass(String confirmPass) {
-        this.confirmPass = confirmPass;
-    }
 
 
    

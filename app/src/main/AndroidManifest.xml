@@ -27,7 +27,7 @@
     <application
         android:name="smart.network.patasuadmin.app.AppController"
         android:allowBackup="true"
-        android:icon="@drawable/fireworks"
+        android:icon="@drawable/firecracker"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -51,13 +51,11 @@
         </activity>
         <activity
             android:name="smart.network.patasuadmin.NaviActivity"
-            android:label="T Mobiles Admin" />
+            android:label="Patasu Kadai" />
         <activity
             android:name="smart.network.patasuadmin.shop.MainActivity"
             android:label="Shop List" />
-        <activity
-            android:name="smart.network.patasuadmin.ad.MainActivityAd"
-            android:label="AD List" />
+
         <activity android:name="smart.network.patasuadmin.shop.ShopRegister" />
         <activity android:name="smart.network.patasuadmin.shop.ShopUpdate" />
 
@@ -88,20 +86,7 @@
             android:name="smart.network.patasuadmin.stock.StockUpdate"
             android:label="StockUpdate"
             android:theme="@style/AppThemeWhite" />
-        <activity
-            android:name="smart.network.patasuadmin.contact.MainActivityContact"
-            android:label="@string/app_name"
-            android:theme="@style/AppThemeSe.NoActionBar">
 
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-        </activity>
 
 
         <activity
@@ -118,52 +103,17 @@
             </intent-filter>
 
         </activity>
-        <activity
-            android:name="smart.network.patasuadmin.contact.ContactRegister"
-            android:label="Staff Update"
-            android:theme="@style/AppThemeWhite" />
-        <activity
-            android:name="smart.network.patasuadmin.contact.ContactUpdate"
-            android:label="Register Offer"
-            android:theme="@style/AppThemeWhite" />
+
         <activity
             android:name="smart.network.patasuadmin.staff.StaffUpdate"
             android:label="Staff Update"
             android:theme="@style/AppThemeWhite" />
-        <activity
-            android:name="smart.network.patasuadmin.offer.OfferRegister"
-            android:label="Register Offer"
-            android:theme="@style/AppThemeWhite" />
-        <activity
-            android:name="smart.network.patasuadmin.offer.OfferUpdate"
-            android:label="Offer Update"
-            android:theme="@style/AppThemeWhite" />
-        <activity
-            android:name="smart.network.patasuadmin.offer.OfferActivity"
-            android:label="All Offers"
-            android:theme="@style/AppThemeWhite" />
+
         <activity
             android:name="smart.network.patasuadmin.staff.StaffRegister"
             android:label="Staff Register"
             android:theme="@style/AppThemeWhite" />
-        <activity
-            android:name="smart.network.patasuadmin.cmobile.MobileRegister"
-            android:label="Mobile Register"
-            android:theme="@style/AppThemeWhite" />
-        <activity
-            android:name="smart.network.patasuadmin.cmobile.MainActivityMobile"
-            android:label="@string/app_name"
-            android:theme="@style/AppThemeSe.NoActionBar">
 
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-        </activity>
         <activity android:name="smart.network.patasuadmin.attachment.ActivityMediaOnline"/>
     </application>
 

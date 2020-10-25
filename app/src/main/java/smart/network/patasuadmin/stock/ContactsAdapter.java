@@ -7,12 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import smart.network.patasuadmin.R;
+import smart.network.patasuadmin.staff.Staff;
 
 /**
  * Created by ravi on 16/11/17.
@@ -23,20 +25,20 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
     private Context context;
     private List<Contact> contactList;
     private List<Contact> contactListFiltered;
+    public  OnStockClick onStockClick;
     private ContactsAdapterListener listener;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name,price,ram,rom;
-        public TextView thumbnail;
+        public TextView title,price,item;
+        public ImageView editImg, deleteImg;
 
         public MyViewHolder(View view) {
             super(view);
-            name = view.findViewById(R.id.name);
-
+            title = view.findViewById(R.id.name);
+            item = view.findViewById(R.id.item);
             price = view.findViewById(R.id.price);
-            ram = view.findViewById(R.id.ram);
-            rom = view.findViewById(R.id.rom);
-            thumbnail = view.findViewById(R.id.thumbnail);
+            editImg = (ImageView) view.findViewById(R.id.editImg);
+            deleteImg = (ImageView) view.findViewById(R.id.deleteImg);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -49,11 +51,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
     }
 
 
-    public ContactsAdapter(Context context, List<Contact> contactList, ContactsAdapterListener listener) {
+    public ContactsAdapter(Context context, List<Contact> contactList, ContactsAdapterListener listener,OnStockClick onStockClick) {
         this.context = context;
         this.listener = listener;
         this.contactList = contactList;
         this.contactListFiltered = contactList;
+        this.onStockClick=onStockClick;
     }
 
     @Override
@@ -67,16 +70,24 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Contact contact = contactListFiltered.get(position);
-        holder.name.setText(contact.getBrand()+" "+contact.getModel()+":");
-        holder.price.setText("₹ "+contact.getPrice());
-        holder.ram.setText("RAM "+contact.getRam()+":");
-        holder.rom.setText("ROM "+contact.getRom()+":");
-        holder.thumbnail.setText(String.valueOf(position+1));
+        holder.title.setText("Title: "+contact.getTitle());
+        holder.item.setText("Item: "+contact.getItems());
+        holder.price.setText("Price: "+contact.getPrice());
 
-//        Glide.with(context)
-//                .load(contact.getImage())
-//                .apply(RequestOptions.circleCropTransform())
-//                .into(holder.thumbnail);
+        holder.editImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onStockClick.onEditClick(position);
+            }
+        });
+
+        holder.deleteImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onStockClick.onDeleteClick(position);
+            }
+        });
+
     }
 
     @Override
@@ -98,7 +109,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
-                        String val=row.getBrand()+" "+row.getModel();
+                        String val=row.getTitle()+" "+row.getItems();
                         if (val.toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(row);
                         }
@@ -122,5 +133,9 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
 
     public interface ContactsAdapterListener {
         void onContactSelected(Contact contact);
+    }
+    public void notifyData(List<Contact> contactList) {
+        this.contactListFiltered = contactList;
+        notifyDataSetChanged();
     }
 }

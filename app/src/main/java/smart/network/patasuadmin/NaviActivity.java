@@ -7,10 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.View;
 
-import smart.network.patasuadmin.ad.MainActivityAd;
-import smart.network.patasuadmin.cmobile.MainActivityMobile;
-import smart.network.patasuadmin.contact.MainActivityContact;
-import smart.network.patasuadmin.offer.OfferActivity;
 import smart.network.patasuadmin.shop.MainActivity;
 import smart.network.patasuadmin.staff.MainActivityStaff;
 import smart.network.patasuadmin.stock.MainActivityStock;

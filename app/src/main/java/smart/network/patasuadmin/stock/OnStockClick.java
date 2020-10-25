@@ -1,6 +1,6 @@
-package smart.network.patasuadmin.contact;
+package smart.network.patasuadmin.stock;
 
-public interface OnContactClick {
+public interface OnStockClick {
 
     void onDeleteClick(int position);
 

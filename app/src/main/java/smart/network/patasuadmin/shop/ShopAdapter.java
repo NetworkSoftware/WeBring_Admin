@@ -25,7 +25,7 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.MyViewHolder> 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView shopName, contact,area;
-        private ImageView editImg, deleteImg;
+        public ImageView editImg, deleteImg;
 
         public MyViewHolder(View view) {
             super(view);

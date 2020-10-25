@@ -17,6 +17,8 @@ import java.util.List;
 
 import smart.network.patasuadmin.R;
 import smart.network.patasuadmin.app.GlideApp;
+import smart.network.patasuadmin.shop.OnShopClick;
+import smart.network.patasuadmin.shop.Shop;
 
 /**
  * Created by ravi on 16/11/17.
@@ -27,33 +29,28 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.MyViewHolder
     private Context context;
     private List<Staff> contactList;
     private List<Staff> contactListFiltered;
-    private StaffAdapterListener listener;
+    private OnStaffClick onStaffClick;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name,contact,password;
-        public ImageView thumbnail;
+        public TextView name, storeid, password;
+        public ImageView editImg,deleteImg;
 
         public MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.name);
-            contact = view.findViewById(R.id.contact);
+            storeid = view.findViewById(R.id.storeid);
             password = view.findViewById(R.id.password);
-            thumbnail = view.findViewById(R.id.thumbnail);
+            editImg = (ImageView) view.findViewById(R.id.editImg);
+            deleteImg = (ImageView) view.findViewById(R.id.deleteImg);
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // send selected contact in callback
-                    listener.onStaffSelected(contactListFiltered.get(getAdapterPosition()));
-                }
-            });
+
         }
     }
 
 
-    public StaffAdapter(Context context, List<Staff> contactList, StaffAdapterListener listener) {
+    public StaffAdapter(Context context, List<Staff> contactList, OnStaffClick onStaffClick) {
         this.context = context;
-        this.listener = listener;
+        this.onStaffClick=onStaffClick;
         this.contactList = contactList;
         this.contactListFiltered = contactList;
     }
@@ -69,16 +66,23 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Staff contact = contactListFiltered.get(position);
-        holder.name.setText(contact.getName());
-        holder.password.setText(contact.getPassword());
-        holder.contact.setText(contact.contact);
+        holder.name.setText("Mobile No: "+contact.getName());
+        holder.password.setText("Password: "+contact.getPassword());
+        holder.storeid.setText("Store:"+contact.getStoreid());
 
-        GlideApp.with(context)
-                .load(contact.image)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .skipMemoryCache(false)
-                .placeholder(R.drawable.profile)
-                .into(holder.thumbnail);
+        holder.editImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onStaffClick.onEditClick(position);
+            }
+        });
+
+        holder.deleteImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onStaffClick.onDeleteClick(position);
+            }
+        });
     }
 
     @Override
@@ -100,7 +104,7 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.MyViewHolder
 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
-                        String val=row.getName()+" "+row.getContact();
+                        String val = row.getName();
                         if (val.toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(row);
                         }
@@ -122,7 +126,10 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.MyViewHolder
         };
     }
 
-    public interface StaffAdapterListener {
-        void onStaffSelected(Staff contact);
+
+
+    public void notifyData(List<Staff> contactList) {
+        this.contactListFiltered = contactList;
+        notifyDataSetChanged();
     }
 }
