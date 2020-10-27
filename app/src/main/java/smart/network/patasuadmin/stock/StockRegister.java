@@ -11,6 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -47,6 +49,7 @@ import smart.network.patasuadmin.R;
 import smart.network.patasuadmin.app.AndroidMultiPartEntity;
 import smart.network.patasuadmin.app.AppController;
 import smart.network.patasuadmin.app.Appconfig;
+import smart.network.patasuadmin.app.BaseActivity;
 import smart.network.patasuadmin.app.GlideApp;
 import smart.network.patasuadmin.app.Imageutils;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -55,36 +58,46 @@ import smart.network.patasuadmin.staff.StaffRegister;
 
 import static smart.network.patasuadmin.app.Appconfig.ALL_SHOP;
 import static smart.network.patasuadmin.app.Appconfig.STACK_CREATE;
+import static smart.network.patasuadmin.app.Appconfig.STACK_GET_ALL;
 
 /**
  * Created by user_1 on 11-07-2018.
  */
 
-public class StockRegister extends AppCompatActivity{
+public class StockRegister extends BaseActivity {
 
 
-    EditText title;
+    MaterialBetterSpinner title;
     EditText items;
     EditText price;
+    EditText itemNo;
     MaterialBetterSpinner shopid;
+
 
     private ProgressDialog pDialog;
 
     private String[] STOREID = new String[]{
             "Loading",
     };
+    private String[] TITLE = new String[]{
+            "Sparklers","Ground Chakkars","Flower Pots","Twinkling Star","Pencil","Atom Bombs","One Sound Crakers","Bijili","Chorsa","Giant",
+            "Deluxe","Lar Crackers","Rockets","Fancy Comets","Repeating Shots","Matches","Festival Repeating Shot","New Items","Gift Boxes","Guns",
+    };
     TextView submit;
     Map<String, String> storecodeMap = new HashMap<>();
     Map<String, String> storeNameMap = new HashMap<>();
+
 
     String studentId = null;
     Contact contact=null;
 
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void startDemo() {
         setContentView(R.layout.stock_register);
+        getSupportActionBar().setTitle("Add Items");
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_round_arrow_back_24);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         getSupportActionBar().setTitle("Stock Register");
@@ -94,19 +107,12 @@ public class StockRegister extends AppCompatActivity{
         pDialog.setCancelable(false);
 
         shopid = (MaterialBetterSpinner) findViewById(R.id.storeid);
-        title = (EditText) findViewById(R.id.title);
+        title = (MaterialBetterSpinner) findViewById(R.id.title);
         items = (EditText) findViewById(R.id.items);
         price = (EditText) findViewById(R.id.price);
-          /* ArrayAdapter<String> stateAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, STOREID);
-        storeid.setAdapter(stateAdapter);
-        storeid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            }
-        });
+        itemNo = (EditText) findViewById(R.id.itemsNo);
 
-*/
+
         submit = (TextView) findViewById(R.id.submit);
 
         submit.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +121,7 @@ public class StockRegister extends AppCompatActivity{
                 if (title.getText().toString().length() > 0 &&
                         price.getText().toString().length() > 0 &&
                         items.getText().toString().length() > 0 &&
+                        itemNo.getText().toString().length() > 0 &&
                         shopid.getText().toString().length() > 0
                         ) {
                     registerUser();
@@ -133,6 +140,14 @@ public class StockRegister extends AppCompatActivity{
         });
         fetchstoreid();
 
+        ArrayAdapter<String> titleAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, TITLE);
+        title.setAdapter(titleAdapter);
+        title.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            }
+        });
     }
     private void registerUser() {
         String tag_string_req = "req_register";
@@ -147,9 +162,9 @@ public class StockRegister extends AppCompatActivity{
                 hideDialog();
                 try {
                     JSONObject jObj = new JSONObject(response.substring(response.indexOf("{"), response.length()));
-                    int success = jObj.getInt("success");
+                    boolean success = jObj.getBoolean("success");
                     String msg = jObj.getString("message");
-                    if (success == 1) {
+                    if (success == true) {
                         finish();
                     }
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
@@ -174,6 +189,7 @@ public class StockRegister extends AppCompatActivity{
                 localHashMap.put("title", title.getText().toString());
                 localHashMap.put("items", items.getText().toString());
                 localHashMap.put("price", price.getText().toString());
+                localHashMap.put("nos", itemNo.getText().toString());
                 localHashMap.put("shopid", storecodeMap.get(shopid.getText().toString()));
                 return localHashMap;
             }
@@ -248,6 +264,74 @@ public class StockRegister extends AppCompatActivity{
             }
         };
         AppController.getInstance().addToRequestQueue(local16, "");
+    }
+
+/*
+    private void fetchtitle() {
+        this.pDialog.setMessage("fetching...");
+        showDialog();
+        JSONObject jsonObject = new JSONObject();
+
+        JsonObjectRequest local16 = new JsonObjectRequest(1, STACK_GET_ALL, jsonObject,
+                new Response.Listener<JSONObject>() {
+
+                    public void onResponse(JSONObject localJSONObject1) {
+                        hideDialog();
+                        try {
+                            if (localJSONObject1.getInt("success") == 1) {
+                                  JSONArray jsonArray = localJSONObject1.getJSONArray("staff");
+                                TITLE = new String[jsonArray.length()];
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                    TITLE[i] = jsonObject1.getString("title");
+
+                                }
+                                ArrayAdapter<String> Adapter = new ArrayAdapter<String>(StockRegister.this,
+                                        android.R.layout.simple_dropdown_item_1line, TITLE);
+                                title.setAdapter(Adapter);
+                                title.setText("");
+
+
+                                return;
+                            }
+                        } catch (JSONException localJSONException) {
+                            localJSONException.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            public void onErrorResponse(VolleyError paramVolleyError) {
+                Log.e("tag", "Fetch Error: " + paramVolleyError.getMessage());
+                Toast.makeText(getApplicationContext(), paramVolleyError.getMessage(), Toast.LENGTH_SHORT).show();
+                hideDialog();
+            }
+        }) {
+            protected Map<String, String> getParams() {
+
+                HashMap<String, String> localHashMap = new HashMap<String, String>();
+
+                return localHashMap;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(local16, "");
+    }
+*/
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

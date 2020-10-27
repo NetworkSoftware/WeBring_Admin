@@ -11,6 +11,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -31,8 +33,9 @@ import java.util.Map;
 import smart.network.patasuadmin.R;
 import smart.network.patasuadmin.app.AppController;
 import smart.network.patasuadmin.app.Appconfig;
+import smart.network.patasuadmin.app.BaseActivity;
 
-public class MainActivity extends AppCompatActivity implements OnShopClick {
+public class MainActivity extends BaseActivity implements OnShopClick {
 
     ShopAdapter shopAdapter;
     List<Shop> shopList = new ArrayList<>();
@@ -40,9 +43,11 @@ public class MainActivity extends AppCompatActivity implements OnShopClick {
     ProgressDialog progressDialog;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void startDemo() {
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setTitle("Stores List");
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_round_arrow_back_24);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         progressDialog = new ProgressDialog(this);
@@ -58,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements OnShopClick {
         recyclerView.setLayoutManager(horizontalLayoutManagaer);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(shopAdapter);
+
         addShop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -242,5 +248,22 @@ public class MainActivity extends AppCompatActivity implements OnShopClick {
                 .create();
         return myQuittingDialogBox;
 
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

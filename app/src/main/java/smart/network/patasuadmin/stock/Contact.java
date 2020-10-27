@@ -12,7 +12,8 @@ public class Contact implements Serializable{
     String items;
     String price;
     String shopid;
-
+    String shopname;
+    String itemNo;
     public Contact() {
     }
 
@@ -61,5 +62,21 @@ public class Contact implements Serializable{
 
     public void setShopid(String shopid) {
         this.shopid = shopid;
+    }
+
+    public String getShopname() {
+        return shopname;
+    }
+
+    public void setShopname(String shopname) {
+        this.shopname = shopname;
+    }
+
+    public String getItemNo() {
+        return itemNo;
+    }
+
+    public void setItemNo(String itemNo) {
+        this.itemNo = itemNo;
     }
 }

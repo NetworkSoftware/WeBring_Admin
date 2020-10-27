@@ -11,6 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -47,6 +49,7 @@ import smart.network.patasuadmin.R;
 import smart.network.patasuadmin.app.AndroidMultiPartEntity;
 import smart.network.patasuadmin.app.AppController;
 import smart.network.patasuadmin.app.Appconfig;
+import smart.network.patasuadmin.app.BaseActivity;
 import smart.network.patasuadmin.app.GlideApp;
 import smart.network.patasuadmin.app.Imageutils;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -58,7 +61,7 @@ import static smart.network.patasuadmin.app.Appconfig.ALL_SHOP;
  * Created by user_1 on 11-07-2018.
  */
 
-public class StaffRegister extends AppCompatActivity {
+public class StaffRegister extends BaseActivity {
 
 
     EditText password, name;
@@ -74,12 +77,13 @@ public class StaffRegister extends AppCompatActivity {
     Map<String, String> storeNameMap = new HashMap<>();
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void startDemo() {
         setContentView(R.layout.staff_register);
-
-
         getSupportActionBar().setTitle("Staff Register");
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_round_arrow_back_24);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 
 
         pDialog = new ProgressDialog(this);
@@ -128,7 +132,7 @@ public class StaffRegister extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("success");
                     String msg = jsonObject.getString("message");
-                    if (success) {
+                    if (success==true) {
                         finish();
                     }
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
@@ -226,6 +230,22 @@ public class StaffRegister extends AppCompatActivity {
         };
         AppController.getInstance().addToRequestQueue(local16, "");
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }

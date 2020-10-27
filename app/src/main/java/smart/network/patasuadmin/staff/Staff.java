@@ -10,6 +10,7 @@ public class Staff implements Serializable {
     String id;
     String name;
     String storeid;
+    String storename;
     String password;
 
     public Staff() {
@@ -51,5 +52,13 @@ public class Staff implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getStorename() {
+        return storename;
+    }
+
+    public void setStorename(String storename) {
+        this.storename = storename;
     }
 }

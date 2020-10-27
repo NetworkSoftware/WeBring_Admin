@@ -25,11 +25,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
     private Context context;
     private List<Contact> contactList;
     private List<Contact> contactListFiltered;
-    public  OnStockClick onStockClick;
+    public OnStockClick onStockClick;
     private ContactsAdapterListener listener;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title,price,item;
+        public TextView title, price, item, shop,itemNo;
         public ImageView editImg, deleteImg;
 
         public MyViewHolder(View view) {
@@ -39,7 +39,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
             price = view.findViewById(R.id.price);
             editImg = (ImageView) view.findViewById(R.id.editImg);
             deleteImg = (ImageView) view.findViewById(R.id.deleteImg);
-
+            shop = (TextView) view.findViewById(R.id.storeid);
+            itemNo = (TextView) view.findViewById(R.id.itemNo);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -51,12 +52,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
     }
 
 
-    public ContactsAdapter(Context context, List<Contact> contactList, ContactsAdapterListener listener,OnStockClick onStockClick) {
+    public ContactsAdapter(Context context, List<Contact> contactList, ContactsAdapterListener listener, OnStockClick onStockClick) {
         this.context = context;
         this.listener = listener;
         this.contactList = contactList;
         this.contactListFiltered = contactList;
-        this.onStockClick=onStockClick;
+        this.onStockClick = onStockClick;
     }
 
     @Override
@@ -70,10 +71,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Contact contact = contactListFiltered.get(position);
-        holder.title.setText("Title: "+contact.getTitle());
-        holder.item.setText("Item: "+contact.getItems());
-        holder.price.setText("Price: "+contact.getPrice());
-
+        holder.title.setText( contact.getTitle());
+        holder.item.setText(contact.getItems());
+        holder.price.setText(contact.getPrice());
+        holder.shop.setText(contact.getShopname());
+        holder.itemNo.setText(contact.getItemNo());
         holder.editImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,10 +111,15 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
-                        String val=row.getTitle()+" "+row.getItems();
+                        String val = row.getTitle();
                         if (val.toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(row);
+                        } else if (row.getItemNo().contains(charString.toLowerCase())) {
+                            filteredList.add(row);
+
                         }
+
+
                     }
 
                     contactListFiltered = filteredList;
@@ -134,8 +141,10 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
     public interface ContactsAdapterListener {
         void onContactSelected(Contact contact);
     }
+
     public void notifyData(List<Contact> contactList) {
         this.contactListFiltered = contactList;
+        this.contactList=contactList;
         notifyDataSetChanged();
     }
 }

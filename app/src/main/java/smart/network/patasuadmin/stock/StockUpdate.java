@@ -58,6 +58,7 @@ import smart.network.patasuadmin.shop.Shop;
 
 import static smart.network.patasuadmin.app.Appconfig.ALL_SHOP;
 import static smart.network.patasuadmin.app.Appconfig.STACK_DELETE;
+import static smart.network.patasuadmin.app.Appconfig.STACK_GET_ALL;
 import static smart.network.patasuadmin.app.Appconfig.STACK_UPDATE;
 
 /**
@@ -67,9 +68,10 @@ import static smart.network.patasuadmin.app.Appconfig.STACK_UPDATE;
 public class StockUpdate extends AppCompatActivity {
 
 
-    EditText title;
+    MaterialBetterSpinner title;
     EditText items;
     EditText price;
+    EditText itemNo;
     private ProgressDialog pDialog;
 
 
@@ -83,7 +85,10 @@ public class StockUpdate extends AppCompatActivity {
     private String[] STOREID = new String[]{
             "Loading",
     };
-
+    private String[] TITLE = new String[]{
+            "Sparklers","Ground Chakkars","Flower Pots","Twinkling Star","Pencil","Atom Bombs","One Sound Crakers","Bijili","Chorsa","Giant",
+            "Deluxe","Lar Crackers","Rockets","Fancy Comets","Repeating Shots","Matches","Festival Repeating Shot","New Items","Gift Boxes","Guns",
+    };
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,9 +99,10 @@ public class StockUpdate extends AppCompatActivity {
 
 
         shopid = (MaterialBetterSpinner) findViewById(R.id.storeid);
-        title = (EditText) findViewById(R.id.title);
+        title = (MaterialBetterSpinner) findViewById(R.id.title);
         items = (EditText) findViewById(R.id.items);
         price = (EditText) findViewById(R.id.price);
+        itemNo = (EditText) findViewById(R.id.itemsNo);
 
 
         submit = (TextView) findViewById(R.id.submit);
@@ -107,6 +113,7 @@ public class StockUpdate extends AppCompatActivity {
                 if (title.getText().toString().length() > 0 &&
                         price.getText().toString().length() > 0 &&
                         items.getText().toString().length() > 0 &&
+                        itemNo.getText().toString().length() > 0 &&
                         shopid.getText().toString().length() > 0
                 ) {
                     registerUser(contact);
@@ -124,13 +131,23 @@ public class StockUpdate extends AppCompatActivity {
             }
         });
         fetchstoreid();
+        ArrayAdapter<String> titleAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, TITLE);
+        title.setAdapter(titleAdapter);
+        title.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            }
+        });
         try {
 
-            Contact contact = (Contact) getIntent().getSerializableExtra("data");
+            Contact contact = (Contact) getIntent().getSerializableExtra("object");
+            shopId = contact.id;
             items.setText(contact.items);
+            itemNo.setText(contact.itemNo);
             title.setText(contact.title);
             price.setText(contact.price);
-            shopid.setText(contact.shopid);
+            shopid.setText(contact.shopname);
             submit.setText("Update");
 
 
@@ -178,10 +195,12 @@ public class StockUpdate extends AppCompatActivity {
         }) {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
+                localHashMap.put("id", shopId);
                 localHashMap.put("title", title.getText().toString());
                 localHashMap.put("items", items.getText().toString());
+                localHashMap.put("nos", itemNo.getText().toString());
                 localHashMap.put("price", price.getText().toString());
-                localHashMap.put("shopid", shopid.getText().toString());
+                localHashMap.put("shopid", storecodeMap.get(shopid.getText().toString()));
                 return localHashMap;
             }
         };
@@ -233,7 +252,50 @@ public class StockUpdate extends AppCompatActivity {
                                 ArrayAdapter<String> districtAdapter = new ArrayAdapter<String>(StockUpdate.this,
                                         android.R.layout.simple_dropdown_item_1line, STOREID);
                                 shopid.setAdapter(districtAdapter);
-                                shopid.setText("");
+
+
+                                return;
+                            }
+                        } catch (JSONException localJSONException) {
+                            localJSONException.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            public void onErrorResponse(VolleyError paramVolleyError) {
+                Log.e("tag", "Fetch Error: " + paramVolleyError.getMessage());
+                Toast.makeText(getApplicationContext(), paramVolleyError.getMessage(), Toast.LENGTH_SHORT).show();
+                hideDialog();
+            }
+        }) {
+            protected Map<String, String> getParams() {
+
+                HashMap<String, String> localHashMap = new HashMap<String, String>();
+
+                return localHashMap;
+            }
+        };
+        AppController.getInstance().addToRequestQueue(local16, "");
+    }
+    private void fetchtitle() {
+        this.pDialog.setMessage("fetching...");
+        showDialog();
+        JSONObject jsonObject = new JSONObject();
+
+        JsonObjectRequest local16 = new JsonObjectRequest(1, STACK_GET_ALL, jsonObject,
+                new Response.Listener<JSONObject>() {
+                    public void onResponse(JSONObject localJSONObject1) {
+                        hideDialog();
+                        try {
+                            if (localJSONObject1.getInt("success") == 1) {
+                                JSONArray jsonArray = localJSONObject1.getJSONArray("staff");
+                                TITLE = new String[jsonArray.length()];
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                    TITLE[i] = jsonObject1.getString("title");
+                                }
+                                ArrayAdapter<String> Adapter = new ArrayAdapter<String>(StockUpdate.this,
+                                        android.R.layout.simple_dropdown_item_1line, TITLE);
+                                title.setAdapter(Adapter);
 
 
                                 return;

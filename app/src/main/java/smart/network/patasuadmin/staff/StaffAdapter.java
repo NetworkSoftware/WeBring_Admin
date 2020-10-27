@@ -66,9 +66,9 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Staff contact = contactListFiltered.get(position);
-        holder.name.setText("Mobile No: "+contact.getName());
-        holder.password.setText("Password: "+contact.getPassword());
-        holder.storeid.setText("Store:"+contact.getStoreid());
+        holder.name.setText(contact.getName());
+        holder.password.setText(contact.getPassword());
+        holder.storeid.setText(contact.getStorename());
 
         holder.editImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +107,9 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.MyViewHolder
                         String val = row.getName();
                         if (val.toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(row);
+                        } else if (row.getStorename().contains(charString.toLowerCase())) {
+                            filteredList.add(row);
+
                         }
                     }
 
@@ -130,6 +133,7 @@ public class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.MyViewHolder
 
     public void notifyData(List<Staff> contactList) {
         this.contactListFiltered = contactList;
+        this.contactList=contactList;
         notifyDataSetChanged();
     }
 }

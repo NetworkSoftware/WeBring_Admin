@@ -69,7 +69,8 @@ public class MainActivityStaff extends AppCompatActivity implements OnStaffClick
 
         // toolbar fancy stuff
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Staff");
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_round_arrow_back_24);
+        getSupportActionBar().setTitle("Staff List");
 
         recyclerView = findViewById(R.id.recycler_view);
         contactList = new ArrayList<>();
@@ -137,6 +138,9 @@ public class MainActivityStaff extends AppCompatActivity implements OnStaffClick
                             staff.setName(jsonObject.getString("name"));
                             staff.setPassword(jsonObject.getString("password"));
                             staff.setStoreid(jsonObject.getString("storeid"));
+                            if(!jsonObject.isNull("shopName")) {
+                                staff.setStorename(jsonObject.getString("shopName"));
+                            }
                             contactList.add(staff);
                         }
                         mAdapter.notifyData(contactList);
@@ -210,6 +214,8 @@ public class MainActivityStaff extends AppCompatActivity implements OnStaffClick
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
             return true;
+        } if (id == android.R.id.home) {
+            finish();
         }
 
         return super.onOptionsItemSelected(item);

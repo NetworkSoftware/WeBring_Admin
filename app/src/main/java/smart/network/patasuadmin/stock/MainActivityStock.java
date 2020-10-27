@@ -71,7 +71,8 @@ public class MainActivityStock extends AppCompatActivity implements ContactsAdap
 
         // toolbar fancy stuff
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(R.string.toolbar_title);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_round_arrow_back_24);
+        getSupportActionBar().setTitle("Items List");
 
         recyclerView = findViewById(R.id.recycler_view);
         contactList = new ArrayList<>();
@@ -128,6 +129,10 @@ public class MainActivityStock extends AppCompatActivity implements ContactsAdap
                             contact.setItems(jsonObject.getString("items"));
                             contact.setPrice(jsonObject.getString("price"));
                             contact.setShopid(jsonObject.getString("shopid"));
+                            contact.setItemNo(jsonObject.getString("nos"));
+                            if(!jsonObject.isNull("shopName")) {
+                                contact.setShopname(jsonObject.getString("shopName"));
+                            }
                             contactList.add(contact);
                         }
                         mAdapter.notifyData(contactList);
@@ -201,6 +206,8 @@ public class MainActivityStock extends AppCompatActivity implements ContactsAdap
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
             return true;
+        } if (id == android.R.id.home) {
+            finish();
         }
 
         return super.onOptionsItemSelected(item);

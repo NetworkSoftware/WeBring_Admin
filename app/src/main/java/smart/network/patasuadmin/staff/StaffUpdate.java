@@ -67,7 +67,7 @@ public class StaffUpdate extends AppCompatActivity {
 
     private ProgressDialog pDialog;
 
-    private Staff staff;
+    public Staff staff;
 
     String studentId = null;
 
@@ -117,10 +117,10 @@ public class StaffUpdate extends AppCompatActivity {
         fetchstoreid();
         try {
 
-             staff = (Staff) getIntent().getSerializableExtra("data");
+             staff = (Staff) getIntent().getSerializableExtra("object");
             name.setText(staff.name);
             password.setText(staff.password);
-            storeid.setText(staff.getStoreid());
+            storeid.setText(staff.storename);
             studentId = staff.id;
             submit.setText("Update");
 
@@ -143,10 +143,10 @@ public class StaffUpdate extends AppCompatActivity {
                 Log.d("Register Response: ", response.toString());
                 hideDialog();
                 try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    boolean success = jsonObject.getBoolean("success");
-                    String msg = jsonObject.getString("message");
-                    if (success) {
+                    JSONObject jObj = new JSONObject(response.substring(response.indexOf("{"), response.length()));
+                    int success = jObj.getInt("success");
+                    String msg = jObj.getString("message");
+                    if (success == 1) {
                         finish();
                     }
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
@@ -168,10 +168,10 @@ public class StaffUpdate extends AppCompatActivity {
         }) {
             protected Map<String, String> getParams() {
                 HashMap localHashMap = new HashMap();
-                localHashMap.put("storeid", storeid.getText().toString());
+                localHashMap.put("id", studentId);
+                localHashMap.put("storeid", storecodeMap.get(storeid.getText().toString()));
                 localHashMap.put("password", password.getText().toString());
                 localHashMap.put("name", name.getText().toString());
-                localHashMap.put("id", studentId);
                 return localHashMap;
             }
         };
@@ -202,7 +202,6 @@ public class StaffUpdate extends AppCompatActivity {
                                 ArrayAdapter<String> districtAdapter = new ArrayAdapter<String>(StaffUpdate.this,
                                         android.R.layout.simple_dropdown_item_1line, STOREID);
                                 storeid.setAdapter(districtAdapter);
-                                storeid.setText("");
 
 
                                 return;
