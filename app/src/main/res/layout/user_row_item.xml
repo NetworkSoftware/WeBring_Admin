@@ -166,7 +166,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:tint="@android:color/holo_red_dark"
+            android:tint="@color/colorPrimary"
             app:srcCompat="@drawable/ic_edit_black_24dp" />
 
         <ImageView
@@ -174,7 +174,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:tint="@android:color/holo_red_dark"
+            android:visibility="gone"
+            android:tint="@color/colorPrimary"
             app:srcCompat="@drawable/ic_delete_black_24dp" />
 
     </LinearLayout>

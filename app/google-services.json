@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "802386236394",
+    "project_id": "spirtual-admin",
+    "storage_bucket": "spirtual-admin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802386236394:android:cec256e5a8540e3d87d893",
+        "android_client_info": {
+          "package_name": "pro.network.spirtualadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "802386236394-6bh5ef22nkhiok8lhmeo4skq6q35ip19.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_FeEj3Pk4bUk0AGnr_nnEro8lH5zPWaE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "802386236394-6bh5ef22nkhiok8lhmeo4skq6q35ip19.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

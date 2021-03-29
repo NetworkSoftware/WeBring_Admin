@@ -16,7 +16,7 @@
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:visibility="visible"
-        android:src="@drawable/profile"
+        android:src="@drawable/mobile_phone"
         android:layout_centerVertical="true" />
 
 <LinearLayout

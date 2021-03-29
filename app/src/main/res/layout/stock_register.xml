@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp">
@@ -16,123 +16,240 @@
             android:orientation="vertical">
 
 
-
-                <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                    android:id="@+id/title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Select Title"
-                    android:textColor="@color/black"
-                    android:textSize="15dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_margin="5dp"
-                    android:textColorHint="#c6c6c6"
-                    app:met_floatingLabel="normal"/>
-
-
-            <android.support.design.widget.TextInputLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:layout_weight="1">
-
-                <EditText
-                    android:id="@+id/itemsNo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:backgroundTint="@color/gray"
-                    android:hint="Items No"
-                    android:inputType="textMultiLine"
-                    android:textColorHint="#c6c6c6"
-                    android:textSize="@dimen/textsize" />
-
-            </android.support.design.widget.TextInputLayout>
-
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:layout_weight="1">
-
-                <EditText
-                    android:id="@+id/items"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:backgroundTint="@color/gray"
-                    android:hint="Items Name"
-                    android:inputType="textMultiLine"
-                    android:textColorHint="#c6c6c6"
-                    android:textSize="@dimen/textsize" />
-
-            </android.support.design.widget.TextInputLayout>
-
-
-
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:layout_weight="1">
-
-                <EditText
-                    android:id="@+id/price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:backgroundTint="@color/gray"
-                    android:hint="Price"
-                    android:inputType="number"
-                    android:textColorHint="#c6c6c6"
-                    android:textSize="@dimen/textsize" />
-
-            </android.support.design.widget.TextInputLayout>
-            <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                android:id="@+id/storeid"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Select Store"
-                android:textColor="@color/black"
-                android:textSize="15dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_margin="5dp"
-                android:textColorHint="#c6c6c6"
-                app:met_floatingLabel="normal"/>
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/itemsAdd"
+                    android:layout_width="100dp"
+                    android:layout_height="200dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/dotted"
+                    android:elevation="50dp"
+                    app:cardCornerRadius="5dp">
+
+
+                    <ImageView
+                        android:id="@+id/image_wallpaper"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:scaleType="centerCrop"
+                        android:src="@color/white" />
+
+                    <ImageView
+                        android:id="@+id/image_placeholder"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/ic_outline_add_a_photo_24" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/imagelist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical" />
+            </LinearLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                        android:id="@+id/category"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:hint="Select Category"
+                        android:textColor="@color/black"
+                        android:textColorHint="#c6c6c6"
+                        android:textSize="15dp"
+                        app:met_floatingLabel="normal" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/brand"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:backgroundTint="@color/gray"
+                            android:hint="Select SubCategory"
+                            android:inputType="text"
+                            android:textColorHint="#c6c6c6"
+                            android:textSize="@dimen/textsize" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1">
+
+                        <EditText
+                            android:id="@+id/model"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:backgroundTint="@color/gray"
+                            android:hint="Name"
+                            android:inputType="text"
+                            android:textColorHint="#c6c6c6"
+                            android:textSize="@dimen/textsize" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="gone"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1">
+
+                        <EditText
+                            android:id="@+id/ram"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:backgroundTint="@color/gray"
+                            android:hint="RAM"
+                            android:inputType="number"
+                            android:textColorHint="#c6c6c6"
+                            android:textSize="@dimen/textsize" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="gone"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1">
+
+                        <EditText
+                            android:id="@+id/rom"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:backgroundTint="@color/gray"
+                            android:hint="ROM"
+                            android:inputType="number"
+                            android:textColorHint="#c6c6c6"
+                            android:textSize="@dimen/textsize" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1">
+
+                        <EditText
+                            android:id="@+id/price"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:backgroundTint="@color/gray"
+                            android:hint="Price"
+                            android:inputType="number"
+                            android:textColorHint="#c6c6c6"
+                            android:textSize="@dimen/textsize" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1">
+
+                        <EditText
+                            android:id="@+id/description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:backgroundTint="@color/gray"
+                            android:hint="Description"
+                            android:inputType="textMultiLine"
+                            android:textColorHint="#c6c6c6"
+                            android:textSize="@dimen/textsize" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+                        android:id="@+id/stock_update"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:hint="Select Sold or Not"
+                        android:textColor="@color/black"
+                        android:textColorHint="#c6c6c6"
+                        android:textSize="15dp"
+                        app:met_floatingLabel="normal" />
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <TextView
         android:id="@+id/delete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/submit"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_gravity="bottom"
+        android:layout_marginBottom="10dp"
         android:background="#D11020"
         android:gravity="center"
         android:letterSpacing="0.2"
         android:padding="12dp"
-        android:visibility="gone"
-        android:layout_marginBottom="10dp"
-        android:layout_above="@+id/submit"
         android:text="DELETE"
         android:textColor="#fff"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:background="@color/colorPrimary"
         android:gravity="center"

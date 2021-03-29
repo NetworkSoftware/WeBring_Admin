@@ -1,14 +1,20 @@
 <resources>
-    <string name="app_name">Patasu Admin</string>
+    <string name="app_name">18 SIDDHAS SPRITUAL ADMIN</string>
 
     <string name="action_settings">Settings</string>
-    <string name="toolbar_title">Stock</string>
+    <string name="toolbar_title">Stocks</string>
     <string name="action_search">Search</string>
     <string name="search_hint">Type name…</string>
-    <string name="hint_pet_name">Mobile Name</string>
+    <string name="hint_pet_name">18 SIDDHAS SPRITUAL</string>
     <string name="hint_imei_name">IMEI Number</string>
 
     <string name="hint_price">Price</string>
     <string name="category_model">Model</string>
+    //login
+    <string name="submit">SUBMIT</string>
+    //navBar
+    <string name="stock">Stock</string>
+    <string name="banner">Banner</string>
+    <string name="order">Orders</string>
 
 </resources>

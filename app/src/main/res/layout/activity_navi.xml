@@ -28,8 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:orientation="horizontal">
-        <android.support.v7.widget.CardView
-            android:id="@+id/shop"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/stock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
            android:layout_weight="1"
@@ -50,11 +50,11 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/shopping" />
+                    android:src="@drawable/stocking" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Stores"
+                    android:text="Stock"
                     android:layout_margin="3dp"
                     android:fontFamily="@font/sans_bold"
                     android:layout_gravity="center"
@@ -62,10 +62,10 @@
 
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/staff"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/banner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -86,11 +86,11 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/staff" />
+                    android:src="@drawable/ads" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Staff"
+                    android:text="@string/banner"
                     android:layout_margin="3dp"
                     android:fontFamily="@font/sans_bold"
                     android:layout_gravity="center"
@@ -98,7 +98,53 @@
 
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/orders"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_margin="16dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/stock" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="3dp"
+                    android:fontFamily="@font/sans_bold"
+                    android:text="@string/order"
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
 
     </LinearLayout>
 
@@ -107,38 +153,5 @@
 
 
 
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/stock"
-        android:layout_width="170dp"
-        android:layout_height="140dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="30dp"
-        app:cardCornerRadius="5dp"
-        app:cardElevation="5dp" >
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_margin="16dp"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/list" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Product"
-                android:fontFamily="@font/sans_bold"
-                android:layout_margin="3dp"
-                android:layout_gravity="center"
-                android:textColor="@color/black"/>
-
-
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
 
 </LinearLayout>

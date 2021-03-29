@@ -4,37 +4,61 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:layout_gravity="center"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="18 Siddhas Spirtual"
+        android:textColor="@color/colorPrimary"
+        android:fontFamily="@font/sans_bold"
         android:layout_gravity="center"
-        android:padding="10dp"
+        android:layout_marginTop="45dp"
+        android:textSize="20dp"
+        android:layout_marginBottom="10dp"
+        android:textAllCaps="true"/>
+
+
+    <ImageView
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:src="@drawable/fireworks"/>
+        android:padding="10dp"
+        android:src="@drawable/siddhasnewlogo"
+        android:visibility="visible" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:layout_marginTop="10dp"
         android:orientation="vertical">
 
         <EditText
             android:id="@+id/password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
             android:hint="Password"
+            android:textAlignment="gravity"
+            android:background="@drawable/rectangle"
+            android:layout_gravity="center"
+            android:inputType="textCapWords"
             android:layout_weight="1"
+            android:layout_marginBottom="10dp"
             android:textColor="#000"
             android:textSize="15dp" />
 
 
     <Button
         android:id="@+id/submit"
-        android:layout_width="match_parent"
+        android:layout_margin="5dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="SUBMIT" />
+        android:textColor="#fff"
+        android:background="@color/colorPrimary"
+        android:layout_marginTop="30dp"
+        android:text="@string/submit" />
     </LinearLayout>
 </LinearLayout>
