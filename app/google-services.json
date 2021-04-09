@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "802386236394",
-    "project_id": "spirtual-admin",
-    "storage_bucket": "spirtual-admin.appspot.com"
+    "project_number": "1024741450023",
+    "project_id": "village-mart-admin",
+    "storage_bucket": "village-mart-admin.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:802386236394:android:cec256e5a8540e3d87d893",
+        "mobilesdk_app_id": "1:1024741450023:android:37fa5e960fced6543bc902",
         "android_client_info": {
-          "package_name": "pro.network.spirtualadmin"
+          "package_name": "pro.network.villagemartadmin"
         }
       },
       "oauth_client": [
         {
-          "client_id": "802386236394-6bh5ef22nkhiok8lhmeo4skq6q35ip19.apps.googleusercontent.com",
+          "client_id": "1024741450023-ueghuho8cu20blnspg89s8p8tdp0ehfq.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD_FeEj3Pk4bUk0AGnr_nnEro8lH5zPWaE"
+          "current_key": "AIzaSyDqNcRDBAnGoXm_W85c5g5MSRCfPB_kZrc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "802386236394-6bh5ef22nkhiok8lhmeo4skq6q35ip19.apps.googleusercontent.com",
+              "client_id": "1024741450023-ueghuho8cu20blnspg89s8p8tdp0ehfq.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
