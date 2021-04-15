@@ -254,19 +254,37 @@ public class Appconfig {
     }
 
     public static Map<String, String[]> stringMap = new HashMap<String, String[]>() {{
-        put("Grocery",new String[]{});
-        put("ElectronicItems",new String[]{});
-        put("FancyThings",new String[]{});
-        put("GiftItems",new String[]{});
-        put("Mobiles",new String[]{});
+        put("Grocery items",new String[]{});
+        put("Toys",new String[]{});
+        put("Games",new String[]{});
+        put("Gifts",new String[]{});
+        put("Fancy items",new String[]{});
+        put("Boys",new String[]{});
+        put("Girls",new String[]{});
+        put("Rice",new String[]{});
         put("Stationary",new String[]{});
-        put("Seeds",new String[]{});
-
+        put("Rice",new String[]{});
+        put("Stationary",new String[]{});
+        put("Plastic items",new String[]{});
+        put("Constumes",new String[]{});
+        put("Computer",new String[]{});
+        put("Laptop",new String[]{});
+        put("Ladies",new String[]{});
+        put("Gents",new String[]{});
+        put("Mobile",new String[]{});
+        put("I phone",new String[]{});
+        put("Organic Items",new String[]{});
+        put("Food items",new String[]{});
+        put("Sports",new String[]{});
+        put("Electric items",new String[]{});
+        put("Electronic items",new String[]{});
+        put("Musical items",new String[]{});
     }};
 
     public static String[] CATEGORY = new String[]{
-            "Grocery", "ElectronicItems","FancyThings","GiftItems",
-            "Mobiles","Stationary","Seeds"
+            "Grocery items", "Toys","Games","Gifts","Fancy items","Gifts","Boys","Girls","Rice","Stationary",
+            "Plastic items","Constumes","Computer","Laptop","Ladies","Gents","Mobile","I phone","I phone",
+            "Organic items","Food items","Sports","Electric items","Electronic items","Musical items",
     };
 
     public static DefaultRetryPolicy getPolicy() {
