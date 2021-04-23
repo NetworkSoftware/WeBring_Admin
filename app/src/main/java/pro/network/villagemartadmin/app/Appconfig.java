@@ -283,7 +283,7 @@ public class Appconfig {
 
     public static String[] CATEGORY = new String[]{
             "Grocery items", "Toys","Games","Gifts","Fancy items","Gifts","Boys","Girls","Rice","Stationary",
-            "Plastic items","Constumes","Computer","Laptop","Ladies","Gents","Mobile","I phone","I phone",
+            "Plastic items","Constumes","Computer","Laptop","Ladies","Gents","Mobile","I phone",
             "Organic items","Food items","Sports","Electric items","Electronic items","Musical items",
     };
 
