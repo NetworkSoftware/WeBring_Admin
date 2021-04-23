@@ -271,7 +271,7 @@ public class Appconfig {
         put("Laptop",new String[]{});
         put("Ladies",new String[]{});
         put("Gents",new String[]{});
-        put("Mobile",new String[]{});
+        put("Mobiles",new String[]{});
         put("I phone",new String[]{});
         put("Organic Items",new String[]{});
         put("Food items",new String[]{});
@@ -283,7 +283,7 @@ public class Appconfig {
 
     public static String[] CATEGORY = new String[]{
             "Grocery items", "Toys","Games","Gifts","Fancy items","Gifts","Boys","Girls","Rice","Stationary",
-            "Plastic items","Constumes","Computer","Laptop","Ladies","Gents","Mobile","I phone",
+            "Plastic items","Constumes","Computer","Laptop","Ladies","Gents","Mobiles","I phone",
             "Organic items","Food items","Sports","Electric items","Electronic items","Musical items",
     };
 
