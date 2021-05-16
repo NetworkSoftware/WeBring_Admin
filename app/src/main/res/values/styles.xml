@@ -3,9 +3,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#322d89</item>
-        <item name="colorPrimaryDark">#302B81</item>
-        <item name="colorAccent">#322d89</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
     </style>
     <style name="chipTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textSize">15dp</item>
@@ -16,24 +16,24 @@
     <!-- Base application theme. -->
     <style name="AppThemeSe" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#322d89</item>
-        <item name="colorPrimaryDark">#302B81</item>
-        <item name="colorAccent">#322d89</item>
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
     <style name="AppThemeWhite" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#322d89</item>
-        <item name="colorPrimaryDark">#302B81</item>
-        <item name="colorAccent">#322d89</item>
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
 
     <style name="AppThemeNowhite" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#322d89</item>
-        <item name="colorPrimaryDark">#302B81</item>
-        <item name="colorAccent">#322d89</item>
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:windowLightStatusBar">true</item>
 
     </style>

@@ -30,6 +30,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="3dp"
                 android:layout_gravity="center"
+                android:scaleType="fitCenter"
                 android:layout_weight="1"
                 android:src="@drawable/vivo" />
 
