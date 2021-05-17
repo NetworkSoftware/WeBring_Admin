@@ -51,6 +51,8 @@ public class Appconfig {
     public static final String CATEGORIES_UPDATE = ip + "/update_category.php";
     public static final String CATEGORIES_DELETE = ip + "/delete_category.php";
     public static final String CATEGORIES_GET_ALL = ip + "/get_all_category.php";
+
+
     //Banner
     public static final String BANNERS_CREATE = ip + "/create_banner.php";
     public static final String BANNERS_UPDATE = ip + "/update_stock.php";

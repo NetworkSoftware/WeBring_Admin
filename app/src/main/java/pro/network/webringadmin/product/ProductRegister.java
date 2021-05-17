@@ -40,6 +40,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -56,6 +57,7 @@ import pro.network.webringadmin.app.AppController;
 import pro.network.webringadmin.app.Appconfig;
 import pro.network.webringadmin.app.Imageutils;
 
+import static pro.network.webringadmin.app.Appconfig.CATEGORIES_GET_ALL;
 import static pro.network.webringadmin.app.Appconfig.CATEGORY;
 import static pro.network.webringadmin.app.Appconfig.PRODUCT_CREATE;
 
@@ -190,7 +192,7 @@ public class ProductRegister extends AppCompatActivity implements Imageutils.Ima
             }
         });
 
-
+        getAllCategories();
     }
 
     private void registerUser() {
@@ -264,7 +266,43 @@ public class ProductRegister extends AppCompatActivity implements Imageutils.Ima
         super.onPause();
         hideDialog();
     }
+    private void getAllCategories() {
+        String tag_string_req = "req_register";
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                CATEGORIES_GET_ALL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jObj = new JSONObject(response);
+                    int success = jObj.getInt("success");
 
+                    if (success == 1) {
+                        JSONArray jsonArray = jObj.getJSONArray("data");
+                        CATEGORY = new String[jsonArray.length()];
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            CATEGORY[i] = jsonArray.getJSONObject(i).getString("title");
+                        }
+                        ArrayAdapter<String> titleAdapter = new ArrayAdapter<String>(ProductRegister.this,
+                                android.R.layout.simple_dropdown_item_1line, CATEGORY);
+                        category.setAdapter(titleAdapter);
+                    }
+                } catch (JSONException e) {
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        }) {
+            protected Map<String, String> getParams() {
+                HashMap localHashMap = new HashMap();
+                return localHashMap;
+            }
+        };
+        strReq.setRetryPolicy(Appconfig.getPolicy());
+        AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         imageutils.request_permission_result(requestCode, permissions, grantResults);
@@ -421,10 +459,11 @@ public class ProductRegister extends AppCompatActivity implements Imageutils.Ima
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap hashMap = new HashMap();
                 hashMap.put("Content-Type", "application/json");
-                hashMap.put("Authorization", "AAAAPUhaKqQ:APA91bF_xPv5V-r56L_ZtbbL-2bmI85SiwwfkD7Bxrfx9WU6jC9RhW7aZJ9dykT4fXyebL28wDAZPgAcVjpjq4orGKZVnJqDl1ZFGZCXpmzZ83KPCzW_3M9Uk-M2Enca7wOVuesuy4jf");
+                hashMap.put("Authorization", "AAAACASKjWI:APA91bGKclNcMr6grfehkf1QeUIFgXu0WXOaq0j6yLn6A9iN6pHxvQXwLOaWlTx7MbRZPgvzjdLRmYDmdtdk9ZN1gpkjdukeIXoFbWaVR2EgvKXn91DY_A8DwaNmCZf3NSrVPgLLT5mG");
                 return hashMap;
             }
         };
+
         strReq.setRetryPolicy(Appconfig.getPolicy());
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
