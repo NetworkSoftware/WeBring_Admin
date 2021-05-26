@@ -205,6 +205,12 @@ public class Appconfig {
         return filename;
 
     }
+    public static String[] getSubCatFromCat(String category) {
+        if (stringMap.containsKey(category)) {
+            return stringMap.get(category);
+        }
+        return new String[]{};
+    }
 
     public static String getFilename() {
         File file = new File(Environment.getExternalStorageDirectory().getPath(), "MyFolder/Images");
