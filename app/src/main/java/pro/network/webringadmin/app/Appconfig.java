@@ -1,5 +1,6 @@
 package pro.network.webringadmin.app;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -13,8 +14,18 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -205,7 +216,16 @@ public class Appconfig {
         return filename;
 
     }
-    public static String[] getSubCatFromCat(String category) {
+    private static void showDialog(ProgressDialog pDialog) {
+        if (!pDialog.isShowing())
+            pDialog.show();
+    }
+
+    private static void hideDialog(ProgressDialog pDialog) {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
+    }
+     public static String[] getSubCatFromCat(String category) {
         if (stringMap.containsKey(category)) {
             return stringMap.get(category);
         }

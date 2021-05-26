@@ -79,7 +79,8 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
     EditText price;
     EditText ram;
     EditText rom, description;
-
+    EditText rqty;
+    private MaterialBetterSpinner rqtyType;
     private ProgressDialog pDialog;
     private RecyclerView imagelist;
     private ArrayList<String> samplesList = new ArrayList<>();
@@ -99,6 +100,7 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
     ImageView image_placeholder, image_wallpaper;
     CardView itemsAdd;
     private String imageUrl = "";
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -132,6 +134,19 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
         rom = (EditText) findViewById(R.id.rom);
         description = findViewById(R.id.description);
 
+
+
+
+        stock_update = (MaterialBetterSpinner) findViewById(R.id.stock_update);
+
+        ArrayAdapter<String> stockAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line, STOCKUPDATE);
+        stock_update.setAdapter(stockAdapter);
+        stock_update.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            }
+        });
         brand = findViewById(R.id.brand);
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, CATEGORY);
@@ -147,23 +162,6 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
         });
 
 
-        stock_update = (MaterialBetterSpinner) findViewById(R.id.stock_update);
-
-        ArrayAdapter<String> stockAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, STOCKUPDATE);
-        stock_update.setAdapter(stockAdapter);
-        stock_update.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            }
-        });
-        brand = findViewById(R.id.brand);
-
-        ArrayAdapter<String> brandAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, stringMap.get(CATEGORY[0]));
-        brand.setAdapter(brandAdapter);
-        brand.setThreshold(1);
-
         submit = (TextView) findViewById(R.id.submit);
         submit.setText("UPDATE");
         submit.setOnClickListener(new View.OnClickListener() {
@@ -176,7 +174,9 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
                     brand.setError("Enter the Brand");
                 } else if (model.getText().toString().length() <= 0) {
                     model.setError("Enter the Model");
-                } else if (price.getText().toString().length() <= 0) {
+                }  else if (rqty.getText().toString().length() <= 0) {
+                    rqty.setError("Enter the Quantity");
+                }else if (price.getText().toString().length() <= 0) {
                     price.setError("Enter the Price");
                 } else if (stock_update.getText().toString().length() <= 0) {
                     stock_update.setError("Select the Sold or Not");
@@ -186,7 +186,6 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
 
                     registerUser();
                 }
-
             }
         });
 
@@ -259,6 +258,8 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
                 localHashMap.put("model", model.getText().toString());
                 localHashMap.put("price", price.getText().toString());
                 localHashMap.put("ram", ram.getText().toString());
+                localHashMap.put("rqty", rqty.getText().toString());
+                localHashMap.put("rqtyType", rqtyType.getText().toString());
                 localHashMap.put("rom", rom.getText().toString());
                 localHashMap.put("stock_update", stock_update.getText().toString());
                 localHashMap.put("id", studentId);
@@ -270,7 +271,6 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
         strReq.setRetryPolicy(Appconfig.getPolicy());
         AppController.getInstance().addToRequestQueue(strReq);
     }
-
     private void getAllCategories() {
         String tag_string_req = "req_register";
         StringRequest strReq = new StringRequest(Request.Method.POST,
@@ -308,7 +308,6 @@ public class ProductUpdate extends AppCompatActivity implements Imageutils.Image
         strReq.setRetryPolicy(Appconfig.getPolicy());
         AppController.getInstance().addToRequestQueue(strReq, tag_string_req);
     }
-
     private void deleteUser() {
         String tag_string_req = "req_register";
         pDialog.setMessage("Processing ...");

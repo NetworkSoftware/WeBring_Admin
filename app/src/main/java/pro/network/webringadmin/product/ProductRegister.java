@@ -60,13 +60,13 @@ import pro.network.webringadmin.app.Imageutils;
 import static pro.network.webringadmin.app.Appconfig.CATEGORIES_GET_ALL;
 import static pro.network.webringadmin.app.Appconfig.CATEGORY;
 import static pro.network.webringadmin.app.Appconfig.PRODUCT_CREATE;
+import static pro.network.webringadmin.app.Appconfig.stringMap;
 
 /**
  * Created by user_1 on 11-07-2018.
  */
 
 public class ProductRegister extends AppCompatActivity implements Imageutils.ImageAttachmentListener, ImageClick {
-
     private RecyclerView imagelist;
     private ArrayList<String> samplesList = new ArrayList<>();
     AddImageAdapter maddImageAdapter;
@@ -91,7 +91,6 @@ public class ProductRegister extends AppCompatActivity implements Imageutils.Ima
     private String imageUrl = "";
     ImageView image_placeholder, image_wallpaper;
     CardView itemsAdd;
-
     TextView submit;
 
     @Override
@@ -126,11 +125,12 @@ public class ProductRegister extends AppCompatActivity implements Imageutils.Ima
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ArrayAdapter<String> brandAdapter = new ArrayAdapter<String>(ProductRegister.this,
-                        android.R.layout.simple_dropdown_item_1line, Appconfig.stringMap.get(CATEGORY[position]));
-                brand.setAdapter(brandAdapter);
-                brand.setThreshold(1);
+                        android.R.layout.simple_dropdown_item_1line, Appconfig.getSubCatFromCat(CATEGORY[position]));
+                category.setAdapter(brandAdapter);
+                category.setThreshold(1);
             }
         });
+
 
 
 
@@ -146,9 +146,9 @@ public class ProductRegister extends AppCompatActivity implements Imageutils.Ima
             }
         });
 
-        brand =  findViewById(R.id.brand);
+        brand = findViewById(R.id.brand);
         ArrayAdapter<String> brandAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, Appconfig.stringMap.get(CATEGORY[0]));
+                android.R.layout.simple_dropdown_item_1line, Appconfig.getSubCatFromCat(CATEGORY[0]));
         brand.setAdapter(brandAdapter);
         brand.setThreshold(1);
 
@@ -180,7 +180,7 @@ public class ProductRegister extends AppCompatActivity implements Imageutils.Ima
                     model.setError("Enter the Model");
                 } else if (price.getText().toString().length() <= 0) {
                     price.setError("Enter the Price");
-                } else if (stock_update.getText().toString().length() <= 0) {
+                }  else if (stock_update.getText().toString().length() <= 0) {
                     stock_update.setError("Select the Sold or Not");
                 } else if (samplesList.size() <= 0) {
                     Toast.makeText(getApplicationContext(), "Upload the Images!", Toast.LENGTH_SHORT).show();
